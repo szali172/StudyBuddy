@@ -2,7 +2,7 @@
 # CS 222 Group 92
 
 ## Authors:
-### Divya Sundar (netid), Khushi Maheshwari (netid), Viven Puthenpurayil (vivencp2), Zuhair Ali (sali200)
+### Divya Sundar (dsundar2), Khushi Maheshwari (khushim2), Viven Puthenpurayil (vivencp2), Zuhair Ali (sali200)
 
 &nbsp;
 ## **Description**
