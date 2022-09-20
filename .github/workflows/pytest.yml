@@ -1,21 +1,16 @@
 name: "Validate"
-on:
-  workflow_dispatch:
+on: [push]
+
 jobs:
-  simple:
+  build_and_test:
+    name: Rust project
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@main
-  - name: Set up Python
-      uses: actions/setup-python@main
-      with:
-        python-version: "3.10"
-  - name: Run tests
-      uses: dariocurr/pytest-summary@main
-      with:
-        paths: tests/test_fake.py
-        # or `tests/**`, `tests`
-        options: --quiet
-        # keep pytest quite since there is the action summary
-        show: all
-        # show the summary for both successful and failed tests
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --release --all-features
