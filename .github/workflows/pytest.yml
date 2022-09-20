@@ -1,16 +1,28 @@
-name: "Validate"
-on: [push]
+name: Run Python tests
+
+on: [push, pull_request]
 
 jobs:
-  build_and_test:
-    name: Rust project
+  build:
+    name: Run tests
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.6", "3.7", "3.8", "3.9"]
+
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
+      - uses: szenius/set-timezone@v1.0
         with:
-          toolchain: stable
-      - uses: actions-rs/cargo@v1
+          timezoneLinux: "Europe/Berlin"
+      - uses: actions/checkout@v3
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
         with:
-          command: build
-          args: --release --all-features
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: pip install pytest pytest-md pytest-emoji
+      - uses: pavelzw/pytest-action@v2
+        with:
+          emoji: false
+          verbose: false
+          job-summary: true
