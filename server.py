@@ -11,15 +11,17 @@ cluster = MongoClient(f'mongodb+srv://{c.username}:{c.pw}@studdybuddy.ptwaiia.mo
 def get_name(db, coll, entry):
     
     # Check to see if db and collection exist
-    print('b')
     try:
         database = cluster[db] # archives
         collection = database[coll] # tuscola, 404, etc.
     except:
         return f'Could not access {db} or {coll}\n', 400
-    print('a')
     if request.method == 'GET':    
         print("hi")
+        cursor = collection.find_one({'name': 'John Smith'})
+        
+        if cursor:
+            print(cursor['email'])
         return 'GET worked', 200
     elif request.method == 'PUT':     
         print("hey")
@@ -31,4 +33,4 @@ def get_name(db, coll, entry):
         return 'Error', 405
     
     
-    # curl -X GET https://localhost:5000/buddies/Users/name
+    # curl -X GET http://localhost:5000/buddies/Users/name
