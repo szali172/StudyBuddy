@@ -1,41 +1,27 @@
 package com.example.studybuddy;
+import java.util.ArrayList;
+public class Profile {
+    private String username;
+    private String email;
+    private ArrayList<Course> favorites;
+    private ArrayList<Course> added;
 
-public class MyProfile {
-    private String username_;
-    private String email_;
-    private Course[] favorites_;
-    private Course[] added_;
-
-    public void SetUsername(String name) {
-            username_ = name;
+    public void setUsername(String name) {
+        username = name;
         }
-    public void SetEmail(String email) {
-            email_ = email;
+    public void setEmail(String email) {
+        email = email;
         }
-    public String GetName() {
-            return username_;
+    public String getName() {
+            return username;
         }
-    public String GetEmail(){
-            return email_;
+    public String getEmail(){
+            return email;
         }
-    public void MakeFavorite(Course c){
-            Course[] favorites_copy = new Course[favorites_.length + 1];
-            for (int i = 0; i < favorites_.length; i++) {
-                favorites_copy[i] = favorites_[i];
-            }
-            favorites_copy[favorites_copy.length - 1] = c;
-            favorites_ = favorites_copy;
-        }
-    public void RemoveFavorite(Course c) {
-            int index = 0;
-            for (Course course: favorites_) {
-                if (course == c) {
-                    break;
-                }
-                index++;
-            }
-            for (int i = index; i < favorites_.length - 1; i++) {
-                favorites_[i] = favorites_[i + 1];
-            }
-        }
+    public void makeFavorite(Course c){
+        favorites.add(c);
+    }
+    public void removeFavorite(Course c) {
+        favorites.remove(c);
+    }
 }

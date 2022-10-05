@@ -1,20 +1,13 @@
 package com.example.studybuddy;
-
+import java.util.ArrayList;
 public class FindABuddy{
-    private Post[] posts_;
-    public void MakePost(String name, String location, String work_on) {
+    private ArrayList<Post> posts;
+    public void makePost(String name, String location, String work_on) {
         Post p = new Post(name, location, work_on);
-        if (posts_.length == 0) {
-            posts_[0] = p;
-        } else {
-            posts_[posts_.length - 1] = p;
-        }
+        posts.add(p);
+
     }
-    public void DeletePost(Post post){
-        for (int i = 0; i < posts_.length; i++) {
-            if (posts_[i] == post) {
-                posts_[i] = posts_[i + 1];
-            }
-        }
+    public void deletePost(Post post){
+        posts.remove(post);
     }
 }

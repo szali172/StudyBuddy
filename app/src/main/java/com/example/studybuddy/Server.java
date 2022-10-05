@@ -1,2 +1,4 @@
-package com.example.studybuddy;public class Server {
+package com.example.studybuddy;
+
+public class Server {
 }

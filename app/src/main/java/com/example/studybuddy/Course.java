@@ -1,33 +1,36 @@
 package com.example.studybuddy;
-
+import java.util.ArrayList;
 public class Course {
 
-    private String name_;
-    private double avg_gpa_;
-    private RedditPost[] reddit_posts_;
-    private boolean favorited_;
-    private boolean added_;
+    private String name;
+    private double avgGpa;
+    private ArrayList<RedditPost> redditPosts;
+    private boolean favorite;
+    private boolean added;
 
-    public void SetName(String name) {
-            name_ = name;
+    public void setName(String n) {
+        name = n;
     }
-    public String GetName() {
-            return name_;
+    public String getName() {
+            return name;
     }
-    public void SetGPA(double gpa) {
-            avg_gpa_ = gpa;
+    public void setGPA(double gpa) {
+        avgGpa = gpa;
     }
-    public double GetGPA() {
-            return avg_gpa_;
+    public double getGPA() {
+            return avgGpa;
     }
-    public RedditPost[] GetRedditPost() {
-            return reddit_posts_;
+    public ArrayList<RedditPost> getRedditPost() {
+            return redditPosts;
     }
-    public boolean IsFavorite() {
-            return favorited_;
+    public void setFavorite(boolean fav) {
+        favorite = fav;
     }
-    public boolean IsAdded() {
-            return added_;
+    public boolean isFavorite() {
+            return favorite;
+    }
+    public boolean isAdded() {
+            return added;
     }
 }
 
