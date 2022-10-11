@@ -5,6 +5,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+import android.content.Intent;
+import android.widget.SearchView;
+
 
 import org.jetbrains.annotations.NotNull;
 
@@ -15,8 +19,11 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import android.os.Bundle;
+import android.util.Log;
 
-public class MainActivity extends AppCompatActivity {
+public final class MainActivity extends AppCompatActivity
+        implements SearchView.OnQueryTextListener {
 
     private TextView pagenameTextView;
 
@@ -55,4 +62,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+    @Override
+    public boolean onQueryTextSubmit(String s) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String s) {
+//        listAdapter.edit().replaceAll(FilterSearch.filterByName(query)).commit();
+//        Log.i(TAG, "onQueryTextChange " + query);
+        return true;
+    }
+
+
 }
