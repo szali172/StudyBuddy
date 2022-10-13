@@ -124,3 +124,5 @@ def get_reddit_posts(sub, topic):
         print(post.title)
         
     return '', 200
+
+# TODO: add endpoint to update user info, post location?
