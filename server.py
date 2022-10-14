@@ -1,6 +1,9 @@
 from flask import Flask, render_template, request, jsonify
 import requests
 import credentials as c
+
+import json
+
 app = Flask(__name__)
 
 from pymongo import MongoClient
@@ -26,7 +29,7 @@ def get_person(db, coll, key, value):
         
         # Returns the persons email
         if cursor:
-            return cursor["email"], 200
+            return json.dumps(cursor, default=str), 200
     # Put request
     elif request.method == 'PUT':     
         # def put_key(key):
