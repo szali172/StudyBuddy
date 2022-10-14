@@ -33,7 +33,7 @@ def get_person(coll, key, value):
         cursor = collection.find_one({key: value})
         
         if cursor:
-        return json.dumps(cursor, default=str), 200
+            return json.dumps(cursor, default=str), 200
         
     # Put request
     elif request.method == 'PUT':     
@@ -116,7 +116,7 @@ def add_comment(post_id):
 """
 Retrieve the top posts given a subreddit and search topic
 """
-@app.routed('/reddit_posts/<sub>/<topic>', methods=['GET'])
+@app.route('/reddit_posts/<sub>/<topic>', methods=['GET'])
 def get_reddit_posts(sub, topic):
     subreddit = reddit.subreddit(sub)
     
