@@ -3,6 +3,7 @@ import requests, datetime, json
 from bson.objectid import ObjectId
 import credentials as c
 
+
 app = Flask(__name__)
 
 """ Connect to Mongo DB """
@@ -32,10 +33,9 @@ def get_person(coll, key, value):
         cursor = collection.find_one({key: value})
         
         if cursor:
-            pass
-                    
-        return 'Successful GET', 200
-    
+        return json.dumps(cursor, default=str), 200
+        
+    # Put request
     elif request.method == 'PUT':     
         collection.insert_one(json_obj)
         return f"Successfully inserted document into '{coll}' in DB", 200
