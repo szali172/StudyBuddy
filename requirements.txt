@@ -1,2 +1,6 @@
 Flask==2.0.3
 requests==2.22.0
+pymongo==4.2.0
+requests
+dnspython==2.2.1
+pytest==7.1.3
