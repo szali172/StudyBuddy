@@ -15,6 +15,14 @@ database = cluster["buddies"]
 import praw
 reddit = praw.Reddit(client_id=c.praw_client_id, client_secret=c.praw_client_secret, user_agent=c.praw_user_agent)
 
+@app.route('/profile')
+def my_profile():
+    response_body = {
+        "name": "Viven",
+        "about" :"Testing"
+    }
+
+    return response_body
 
 """
 Find a person entry in the database given a key (i.e. 'name', 'email', etc.) and a value ('John Smith') OR
@@ -33,6 +41,7 @@ def get_person(coll, key, value):
         cursor = collection.find_one({key: value})
         
         if cursor:
+            # return cursor, 200
             return json.dumps(cursor, default=str), 200
         
     # Put request
