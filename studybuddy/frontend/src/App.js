@@ -17,7 +17,6 @@ function App() {
           <Route path='/browse' element={<BrowseCourses/>} />
       </Routes>
       </Router>
-      );
     </div>
   );
 }

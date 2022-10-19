@@ -1,11 +1,19 @@
 import React from "react";
   
 const BrowseCourses = () => {
+    const course = new Course("CS222", "4.0");
+
   return (
     <div>
       <h1>
-        Browse courses page
+        Browse Courses
       </h1>
+      {
+        <div>
+        <p>Course Name: {course.getName()}</p>
+        <p>Average GPA: {course.getGPA()}</p>
+        </div>
+        } 
     </div>
   );
 };
@@ -54,9 +62,18 @@ class Course
 {
     #name = null;
     #avgGpa = 0.0;
-    #redditPosts = null;
+    #redditPosts = [];RedditPost;
     #favorite = false;
     #added = false;
+
+    constructor(n, gpa)
+    {
+        this.#name = n;
+        this.#avgGpa = gpa;
+        this.#favorite = false;
+        this.#added = true;
+    }
+
     setName(n)
     {
         this.#name = n;

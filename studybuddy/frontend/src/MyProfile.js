@@ -1,23 +1,22 @@
 import React from "react";
   
 const MyProfile = () => {
+    const profile = new Profile("bob_smith", "bob_smith@gmail.com");
+    console.log(profile.getName());
   return (
     <div>
       <h1>
-        My profile page
-        {/* 
-        {profile && <div>
-        <p>Name: {profile.getName}</p>
-        <p>Email: {profile.email}</p>
-        <p>Favorited Courses: {profile.favorites}</p>
-        <p>Added Courses: {profile.added}</p>
-        </div>
-        } */}
-
+        My Profile
       </h1> 
+      {
+        <div>
+        <p>Name: {profile.getName()}</p>
+        <p>Email: {profile.getEmail()}</p>
+        </div>
+        } 
     </div>
-  );
-};
+  )
+}
   
 export default MyProfile;
 
@@ -29,12 +28,10 @@ class Profile
     #favorites = null;
     #added = null;
 
-    constructor(n, l, w, a)
+    constructor(n, l)
     {
         this.#username = n;
         this.#email = l;
-        this.#favorites.push(w);
-        this.#added.push(a);
     }
 
     setUsername(name) {
