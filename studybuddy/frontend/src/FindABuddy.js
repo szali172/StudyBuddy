@@ -2,6 +2,8 @@ import React from "react";
   
 const FindABuddy = () => {
     const post = new Post("Bob", "Illini Union", "CS222");
+    const buddyButton = new FindABuddyClass();
+    buddyButton.makePost("CS233" , "UMH" , "WHEE");
   return (
     <div>
       <h1>
@@ -12,6 +14,10 @@ const FindABuddy = () => {
          <p>Name: {post.getName()}</p>
          <p>Location: {post.getLocation()}</p>
          <p>Working On: {post.getWorkOn()}</p>
+            <h2>
+            Posts
+            </h2>
+         <p> {buddyButton.getAllPosts()}</p>
          </div>
         } 
     </div>
@@ -22,10 +28,17 @@ export default FindABuddy;
 
 class FindABuddyClass
 {
-    #posts = null;
+    #posts = [];
     makePost(name, location, work_on) {
         const p = new Post(name, location, work_on);
-        this.#posts.add(p);
+        this.#posts.push(p);
+    }
+    getAllPosts() {
+        var ret = "";
+        for (var i = 0; i < this.#posts.length; i++) {
+            ret +=  "Post: " +  this.#posts[i].getName();
+        }
+        return ret;
     }
     deletePost(post){
         this.#posts.remove(post);
