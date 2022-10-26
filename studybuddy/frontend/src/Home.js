@@ -20,6 +20,7 @@ const tiers = [
     ],
     buttonText: 'GO TO PAGE',
     buttonVariant: 'outlined',
+    linkTo: '/findabuddy',
   },
   {
     title: 'Browse',
@@ -28,6 +29,7 @@ const tiers = [
     ],
     buttonText: 'GO TO PAGE',
     buttonVariant: 'outlined',
+    linkTo: '/browse',
   },
   {
     title: 'Learn More',
@@ -36,6 +38,7 @@ const tiers = [
     ],
     buttonText: 'GO TO PAGE',
     buttonVariant: 'outlined',
+    linkTo: '/LearnMore',
   },
 ];
 
@@ -60,7 +63,6 @@ function Content() {
       <Container maxWidth="md" component="main">
         <Grid container spacing={5} alignItems="flex-end">
           {tiers.map((tier) => (
-            // Enterprise card is full width at sm breakpoint
             <Grid
               item
               xs={12}
@@ -105,9 +107,11 @@ function Content() {
                   </ul>
                 </CardContent>
                 <CardActions>
+                <Link to={tier.linkTo}>
                   <Button fullWidth variant={tier.buttonVariant}>
                     {tier.buttonText}
                   </Button>
+                  </Link>
                 </CardActions>
               </Card>
             </Grid>
