@@ -5,6 +5,7 @@ const BrowseCourses = () => {
 
   return (
     <div>
+        <style>{'body { background-color: #e8c3d9; }'}</style>
       <h1>
         Browse Courses
       </h1>
@@ -30,7 +31,6 @@ class FilterSeach
     }
     filterByPrefix(prefix) {
         for (var i = 0; i < this.#displayedCourses.length; i++) {
-            //Do something
             if (this.#displayedCourses[i].includes(prefix)) {
                 <div>
                 this.#displayedCourses[i]
@@ -40,7 +40,6 @@ class FilterSeach
     }
     filterByName(name) {
         for (var i = 0; i < this.#displayedCourses.length; i++) {
-            //Do something
             if (this.#displayedCourses[i] === name) {
                 <div>
                 this.#displayedCourses[i]
