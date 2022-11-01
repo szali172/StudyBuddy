@@ -2,9 +2,11 @@ from flask import Flask, render_template, request, jsonify
 import requests, datetime, json
 from bson.objectid import ObjectId
 import credentials as c
+from flask_cors import CORS
 
 
 app = Flask(__name__)
+CORS(app)
 
 """ Connect to Mongo DB """
 from pymongo import MongoClient
@@ -15,22 +17,12 @@ database = cluster["buddies"]
 import praw
 reddit = praw.Reddit(client_id=c.praw_client_id, client_secret=c.praw_client_secret, user_agent=c.praw_user_agent)
 
-@app.route('/profile')
-def my_profile():
-    response_body = {
-        "name": "Viven",
-        "about" :"Testing"
-    }
-
-    return response_body
-
 """
 Find a person entry in the database given a key (i.e. 'name', 'email', etc.) and a value ('John Smith') OR
 Find, insert, or delete a post from the db
 """
 @app.route('/<coll>/<key>/<value>', methods=['PUT', 'GET', 'DELETE'])
 def get_person(coll, key, value):
-    
     # Check to see if collection exists
     try:
         collection = database[coll] # either users or posts
@@ -38,10 +30,11 @@ def get_person(coll, key, value):
         return f'Could not access {coll}\n', 400
     
     if request.method == 'GET':    
+        # resp = requests.Response("Foo bar baz")
+        # resp.headers['Access-Control-Allow-Origin'] = '*'
         cursor = collection.find_one({key: value})
         
         if cursor:
-            # return cursor, 200
             return json.dumps(cursor, default=str), 200
         
     # Put request
