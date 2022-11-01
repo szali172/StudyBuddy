@@ -20,6 +20,10 @@ return (
       <NavLink to="/browse" activeStyle>
         Browse
       </NavLink>
+      <NavLink to="/learnmore" activeStyle>
+        Learn More
+      </NavLink>
+
 
       <Button href="#" variant="outlined" sx={{ my: 1, mx: 1.5 }}>
             Login

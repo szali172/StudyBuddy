@@ -1,10 +1,11 @@
 from flask import Flask, render_template, request, jsonify
 import requests, datetime, json
-from bson.objectid import ObjectId
 import credentials as c
-
+import validate_entry
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 """ Connect to Mongo DB """
 from pymongo import MongoClient
@@ -16,12 +17,15 @@ import praw
 reddit = praw.Reddit(client_id=c.praw_client_id, client_secret=c.praw_client_secret, user_agent=c.praw_user_agent)
 
 
+
 """
-Find a person entry in the database given a key (i.e. 'name', 'email', etc.) and a value ('John Smith') OR
-Find, insert, or delete a post from the db
+Retrieve a document from either the 'Posts' or 'Users' collection 
+    given a key (i.e. name, email, id) and a value ("John Smith", "jsmith@illinois.edu", "12sd31S2P0")
+    
+Returns a json object containing all fields of the DB entry
 """
-@app.route('/<coll>/<key>/<value>', methods=['PUT', 'GET', 'DELETE'])
-def get_person(coll, key, value):
+@app.route('/get/<coll>/<key>=<value>')
+def get(coll, key, value):
     
     # Check to see if collection exists
     try:
@@ -29,36 +33,21 @@ def get_person(coll, key, value):
     except:
         return f'Could not access {coll}\n', 400
     
-    if request.method == 'GET':    
-        cursor = collection.find_one({key: value})
-        
-        if cursor:
-            return json.dumps(cursor, default=str), 200
-        
-    # Put request
-    elif request.method == 'PUT':     
-        collection.insert_one(json_obj)
-        return f"Successfully inserted document into '{coll}' in DB", 200
-       
-    elif request.method == 'DELETE':  
-        print("heyyyyyyy")
-        return 'DELETE worked', 200
+    cursor = collection.find_one({key: value})
     
+    if cursor:
+        return json.dumps(cursor, default=str), 200
     else:
-        return 'Error', 405
+        return 'Could not find any document with field {\'%s\' : \'%s\'} in the %s collection'.format(key, value, coll), 400   
     
     
-    # curl -X GET http://localhost:5000/buddies/Users/name
-    # curl -X GET http://localhost:5000/buddies/Users/email/jsmith@illinois.edu
-    # %20 represents space
-
-
-
+    
 """
-Insert an op's post as a json into the db
+Delete a document from either the 'Posts' or 'Users' collection 
+    given an ONLY an id key and a value. Cannot delete by name, email, or any other field besides id
 """
-@app.route('/insert_post/<coll>/', methods=['PUT'])
-def insert_post(coll, json_obj):
+@app.route('/delete/<coll>/id=<value>')
+def delete(coll, value):
     
     # Check to see if collection exists
     try:
@@ -66,51 +55,122 @@ def insert_post(coll, json_obj):
     except:
         return f'Could not access {coll}\n', 400
     
-    collection.insert_one(json_obj)
-    return f"Successfully inserted document into '{coll}' in DB", 200
-   
+    # Ensure field passed is an id
+    cursor = collection.find_one({'id': value})
+    
+    if cursor:
+        collection.delete_one({'id': value})
+        if coll == 'Posts': return f'Successfully deleted post \'{value}\' from \'{coll}\'', 200
+        else: return f'Successfully deleted user \'{value}\' from \'{coll}\'', 200
+    else:
+        return 'Could not find any document with field {\'id\' : \'%s\'} in the %s collection'.format(value, coll), 400
+    
+    
 
 """
-Called when a user writes a comment to a post
-@param post_id: unique ID of the post
+Inserts a document into either the 'Posts' or 'Users' collection
+    with a given JSON encoded into the HTTP request
+**JSON**: contains post or user in a dictionary format. MUST contain all fields 
+            (comments array for post may be empty, courses and favorites for user may be empty)
+"""
+@app.route('/insert/<coll>', methods=['POST'])
+def insert(coll):
+    
+    # Check to see if collection exists
+    try:
+        collection = database[coll] # either users or posts
+    except:
+        return f'Could not access {coll}\n', 400
+    
+    entry = json.loads(request.json)
+    
+    # Handle entry separately depending on collection specified
+    if coll == 'Posts':
+        response, status = validate_entry.validate_post_entry(database, entry, 'insert')
+    elif coll == 'Users':
+        response, status = validate_entry.validate_user_entry(database, entry, 'insert')
+    else:
+        return f'Please pass a valid collection name (either \'Posts\' or \'Users\'). {coll} is not valid for posting data', 400
+    
+    # Entry is valid
+    if status == 200:     
+        collection.insert_one(entry)
+        if coll == 'Posts': return f'Successfully inserted post \'{entry["post_id"]}\' into \'{coll}\'', 200
+        else: return f'Successfully inserted user \'{entry["id"]}\' into \'{coll}\'', 200     
+    else:
+        return response, status
+
+
+
+"""
+Inserts a comment to a post given a unique ID of the post (post_id)
 **JSON**: contains comment in a dictionary format, i.e.
           {"user_id":"12D32423kbJK11","ts":"2022-10-12 16:49:39.596765","content":"text"}
 """
-@app.route('/add_comment/<post_id>', methods=['PUT']) 
-def add_comment(post_id):
+@app.route('/insert_comment/post_id=<post_id>', methods=['PUT']) 
+def insert_comment(post_id):
     
     # Search for post
     collection = database['Posts']
     cursor = collection.find_one({"post_id": post_id})
     
     if cursor:
-        obj_id = cursor["_id"]
         comment = json.loads(request.json)
         
-        # Validate JSON fields
-        for requiredKey in ['user_id', 'ts', 'content']:
-            if requiredKey not in comment:
-                return f'Key "{requiredKey}" missing', 400
-            
-        # Validate user exists
-        users_coll = database['Users']
-        user_doc = users_coll.find_one({'id': comment['user_id']})
-        if user_doc:
-            pass
-        else:
-            return f"User with id \'{comment['user_id']}\' not found. Check user_id", 400
-            
-        # Validate timestamp format
-        try:
-            ts = datetime.datetime.strptime(comment['ts'], "%Y-%m-%d %H:%M:%S.%f")
-        except:
-            return f"Date format \"{comment['ts']}\" is incorrect\nCorrect format is \"2022-10-12 16:49:39.596765\"", 400
+        response, status = validate_entry.validate_comment_entry(database, comment, "insert")
         
-        collection.update_one({'_id': obj_id}, {'$push': {"comments": comment}})
-        return f'Successfully added comment to post {post_id}', 200
-    
+        if status == 200:
+            collection.update_one({"post_id": post_id}, {'$push': {"comments": comment}})
+            return f'Successfully added comment to post {post_id}', status
+        elif status == 500:
+            return f'Internal server error: {response}', status
+        else:
+            return response, status
     else:
         return f'Post with id \"{post_id}\' not found. Check post_id', 400
+    
+
+
+### TODO: implement an update route, url should accept a coll, search_key=search_value to lookup item, and a key=value to update the found item
+    ### may need to allow update route to take a json so that multiple fields can be updated at once
+"""
+Updates an entry given a collection ('Users' or 'Posts')
+    and a search_key and search_value, which the entry to be updated will be initially found with
+**JSON**: an array of fields with for a user or post, i.e.
+          {"name":"Johnny Smith"} or {"name":"Johnny Smith", "email":"jsmith92@illinois.edu"} , etc...
+"""
+@app.route('/update/<coll>/<search_key>=<search_value>', methods=['PUT']) 
+def update(coll, search_key, search_value):
+    
+    # Check to see if collection exists
+    try:
+        collection = database[coll] # either users or posts
+    except:
+        return f'Could not access {coll}\n', 400
+    
+    # Search for filter query
+    cursor = collection.find_one({search_key: search_value})
+    
+    if cursor:
+        entry = json.loads(request.json)
+        
+        if coll == 'Users':
+            response, status = validate_entry.validate_user_entry(database, entry, 'update')
+        elif coll == 'Posts':
+            response, status = validate_entry.validate_post_entry(database, entry, 'update')
+        else:
+            return f'Please pass a valid collection name (either \'Posts\' or \'Users\'). {coll} is not valid for posting data', 400
+        
+        if status == 200:
+            collection.update_one({search_key: search_value}, {'$set': entry})
+            return f'Successfully updated {search_value} to {entry[search_value]}', 200
+        else:
+            return response, status
+    else:
+        return 'Could not find any document with field {\'%s\' : \'%s\'} in the %s collection'.format(search_key, 
+                                                                                                      search_value, 
+                                                                                                      coll), 400
+    
     
     
 """
@@ -125,4 +185,13 @@ def get_reddit_posts(sub, topic):
         
     return '', 200
 
-# TODO: add endpoint to update user info, post location?
+
+
+# TODO: Implement a cache
+# TODO: Implement a backup database for users (in case of user deletion)
+
+
+
+# curl -X GET http://localhost:5000/get/Posts/post_id=h6Gw4320PMkq1e
+# curl -X GET http://localhost:5000/get/Users/email=jsmith@illinois.edu
+# %20 represents space

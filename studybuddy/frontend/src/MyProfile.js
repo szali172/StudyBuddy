@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState }from "react";
+import axios from "axios";
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
@@ -11,6 +12,28 @@ import GlobalStyles from '@mui/material/GlobalStyles';
 import Container from '@mui/material/Container';
 
 const MyProfile = () => {
+  const [userData, setUserData] = useState(null)
+  function getUserData(key,value) {
+    axios({
+      method: "GET",
+      url:"http://127.0.0.1:5000/get/Users/"+key+"="+value,
+    })
+    .then((response) => {
+      const res =response.data
+      setUserData(({
+        user_id: res["id"],
+        user_name: res["name"],
+        user_email: res["email"],
+        user_courses: res["courses"],
+        user_favorites: res["favorites"]
+      }))
+    }).catch((error) => {
+      if (error.response) {
+        console.log(error.response)
+        console.log(error.response.status)
+        console.log(error.response.headers)
+        }
+    })}
 
     const profile = new Profile("bob_smith", "bob_smith@gmail.com", "Computer Science");
   return (
@@ -69,9 +92,15 @@ const MyProfile = () => {
                 </Typography>
                     {
                         <div>
-                        <p>Name: {profile.getName()}</p>
-                        <p>Email: {profile.getEmail()}</p>
-                        <p>Major/Minor: {profile.getMajor()}</p>
+                        <p>To get your profile details: </p><button onClick={() => getUserData('name', 'John%20Smith')}>Click me</button>
+                        {userData && <div>
+                              <p>Id: {userData.user_id}</p>
+                              <p>Name: {userData.user_name}</p>
+                              <p>Email: {userData.user_email}</p>
+                              <p>Courses: {userData.user_courses.map(app => (<li>{app}</li>))}</p>
+                              <p>Favorites: {userData.user_favorites.map(app => (<li>{app}</li>))}</p>
+                            </div>
+                        }
                         </div>
                     } 
                     <button> Edit Info</button>   

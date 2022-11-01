@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import MyProfile from './MyProfile';
 import FindABuddy from './FindABuddy';
 import BrowseCourses from './BrowseCourses';
+import LearnMore from './LearnMore';
 import Home from './Home';
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
           <Route path='/findabuddy' element={<FindABuddy/>} />
           <Route path='/profile' element={<MyProfile/>} />
           <Route path='/browse' element={<BrowseCourses/>} />
+          <Route path='/learnmore' element={<LearnMore/>} />
       </Routes>
       </Router>
     </div>

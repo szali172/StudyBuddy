@@ -11,9 +11,9 @@ import Counter from "../components/Counter";
 //test block
 describe("<Button />", () => {
     test("Should render label correctly", () => {
-      const { getByText } = makeSut({ label: "My Button" });
+      const { getByText } = makeSut({ label: "Go to page" });
   
-      expect(getByText(/My Button/)).toBeInTheDocument();
+      expect(getByText(/Go to page/)).toBeInTheDocument();
     });
   
     test("Should call onClick successfully", () => {
