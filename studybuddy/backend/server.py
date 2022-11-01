@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, jsonify
 import requests, datetime, json
 import credentials as c
 import validate_entry
+from flask_cors import CORS
 
 
 app = Flask(__name__)
