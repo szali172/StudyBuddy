@@ -18,7 +18,7 @@ function App() {
   function getUserData(key,value) {
     axios({
       method: "GET",
-      url:"http://127.0.0.1:5000/Users/"+key+"/"+value,
+      url:"http://127.0.0.1:5000/get/Users/"+key+"="+value,
     })
     .then((response) => {
       const res =response.data
@@ -45,7 +45,7 @@ function App() {
   function getClassData(key, value) {
     axios({
       method: "GET",
-      url:"http://127.0.0.1:5000/classes/"+key+"/"+value,
+      url:"http://127.0.0.1:5000/get/classes/"+key+"="+value,
     })
     .then((response) => {
       const res =response.data
@@ -90,7 +90,7 @@ function App() {
   function getPostData(key, value) {
     axios({
       method: "GET",
-      url:"http://127.0.0.1:5000/Posts/"+key+"/"+value,
+      url:"http://127.0.0.1:5000/get/Posts/"+key+"="+value,
     })
     .then((response) => {
       const res =response.data

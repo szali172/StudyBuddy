@@ -6,6 +6,7 @@ from flask_cors import CORS
 
 
 app = Flask(__name__)
+CORS(app)
 
 """ Connect to Mongo DB """
 from pymongo import MongoClient
