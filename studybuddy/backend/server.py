@@ -75,16 +75,14 @@ Inserts a document into either the 'Posts' or 'Users' collection
             (comments array for post may be empty, courses and favorites for user may be empty)
 """
 @app.route('/insert/<coll>', methods=['POST'])
-def insert(coll):
-    
+def insert(coll):  
     # Check to see if collection exists
     try:
         collection = database[coll] # either users or posts
     except:
         return f'Could not access {coll}\n', 400
     
-    entry = json.loads(request.json)
-    
+    entry = json.loads(json.dumps(request.json))
     # Handle entry separately depending on collection specified
     if coll == 'Posts':
         response, status = validate_entry.validate_post_entry(database, entry, 'insert')

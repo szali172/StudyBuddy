@@ -90,8 +90,7 @@ def json_fields(entry, ENTRY_FIELDS, method):
 """
 Helper to check if a user exists in a database before inserting post/comment (entry_type)
 """
-def user_exists(database, entry, entry_type):
-    
+def user_exists(database, entry, entry_type):    
     if entry_type == 'post':
         id = 'op_id'
     elif entry_type == 'comment':
@@ -100,10 +99,11 @@ def user_exists(database, entry, entry_type):
         return "Bad entry type \'{entry_type}\' when validating entry", 500
     
     users_coll = database['Users']
-    user_entry = users_coll.find_one({'id': entry[id]})
-    
+    user_entry = users_coll.find_one({'id': entry[id]})    
     if not user_entry:
         return f"User with id \'{entry[id]}\' not found. Check user_id", 400
+
+    return "User exists", 200
 
 
 """
@@ -114,6 +114,7 @@ def timestamp(entry):
         ts = datetime.datetime.strptime(entry['ts'], "%Y-%m-%d %H:%M:%S.%f")
     except:
         return f"Date format \"{entry['ts']}\" is incorrect\nCorrect format is \"2022-10-12 16:49:39.596765\"", 400
+    return "Timestamp valid", 200
     
 
 

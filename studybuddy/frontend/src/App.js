@@ -9,7 +9,6 @@ function App() {
   const [classData, setClassData] = useState(null)
   const [postData, setPostData] = useState(null)
 
-
   /*
   Retrieve user data given a key (i.e. name, email, id) and a value ("John Smith", "jsmith@illinois.edu", "12sd31S2P0")
 
@@ -36,6 +35,8 @@ function App() {
         console.log(error.response.headers)
         }
     })}
+
+
 
   /*
   Retrieve course data given a key (i.e. subject, number, course title) and a value ("CS", "225", "Data Structures")
@@ -111,6 +112,49 @@ function App() {
         }
     })}
 
+
+    /*
+     Inserts a user into the 'Users' collection of the database given arguments
+      id: string, name: string, email: string, password: string, courses: array of strings, favorites: array of strings
+    */
+
+    function insertUserData(id, name, email, password, courses, favorites) {
+      
+      const data = `{"id":"${id}","name":"${name}","email":"${email}","password":"${password}","courses":"${courses}","favorites":"${favorites}"}`;
+
+      axios.post("http://127.0.0.1:5000/insert/Users", data, {headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json',
+    }}).catch((error) => {
+        if (error.response) {
+          console.log(error.response)
+          console.log(error.response.status)
+          console.log(error.response.headers)
+          }
+        })
+    }
+
+     /*
+     Inserts a post into the 'Posts' collection of the database given arguments
+      post_id: string, op_id: string, ts: string, location: string, content: string comments: array of strings
+    */
+
+    function insertPostData(post_id, op_id, ts, location, content, comments) {
+      
+      const data = `{"post_id":"${post_id}","op_id":"${op_id}","ts":"${ts}","location":"${location}","content":"${content}","comments":"${comments}"}`;
+     
+      axios.post("http://127.0.0.1:5000/insert/Posts", data, {headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json',
+    }}).catch((error) => {
+        if (error.response) {
+          console.log(error.response)
+          console.log(error.response.status)
+          console.log(error.response.headers)
+          }
+        })
+    }
+
   return (
     <div className="App">
       <header className="App-header">
@@ -134,7 +178,6 @@ function App() {
             </div>
         }
 
-
         <p>To get Post details: </p><button onClick={() => getPostData('post_id', 'h6Gw4320PMkq1e')}>Click me</button>
         {postData && <div>
               <p>Time: {postData.ts}</p>
@@ -142,6 +185,10 @@ function App() {
               <p>Content: {postData.content}</p>
             </div>
         }
+
+        <p>Insert User Data: </p><button onClick={() => insertUserData("1685736281929", "Bob Smith", "bobsmith@illinois.edu", "bobby", ["CS 222", "CS 225"],["CS 222"])}>Click me</button>
+
+        <p>Insert Post Data: </p><button onClick={() => insertPostData("4567898765639", "1685736281929", "2022-11-6 21:42:26.423489" , "Siebel CS", "Someone want to study for CS 361 with me?", [{"user_id":"12D32423kbJK11","ts":"2022-10-12 16:49:39.596765","content":"Yeah I'm down! What time?"},{"user_id":"9as7dfh23hkjWs","ts":"2022-10-12 16:54:39.596771","content":"Same here. Did you figure out how to do #4? I'm free to meet up at 7pm!"},{"user_id":"12D32423kbJKH9","ts":"2022-10-12 16:56:39.596775","content":"I did figure that one out! 7pm works with me if you guys are all free"}])}>Click me</button>
       </header>
     </div>
   );
