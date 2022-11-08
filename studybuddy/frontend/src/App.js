@@ -7,7 +7,7 @@ import FindABuddy from './FindABuddy';
 import BrowseCourses from './BrowseCourses';
 import LearnMore from './LearnMore';
 import Home from './Home';
-
+import Login from './Login';
 function App() {
   return (
     <div className="App">
@@ -19,6 +19,7 @@ function App() {
           <Route path='/profile' element={<MyProfile/>} />
           <Route path='/browse' element={<BrowseCourses/>} />
           <Route path='/learnmore' element={<LearnMore/>} />
+          <Route path='/login' element={<Login/>} />
       </Routes>
       </Router>
     </div>

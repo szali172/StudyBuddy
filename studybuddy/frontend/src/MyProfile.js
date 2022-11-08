@@ -11,6 +11,8 @@ import Typography from '@mui/material/Typography';
 import GlobalStyles from '@mui/material/GlobalStyles';
 import Container from '@mui/material/Container';
 
+
+
 const MyProfile = () => {
   const [userData, setUserData] = useState(null)
   function getUserData(key,value) {
@@ -34,6 +36,30 @@ const MyProfile = () => {
         console.log(error.response.headers)
         }
     })}
+
+     /*
+        Inserts a user into the 'Users' collection of the database given arguments
+        id: string, name: string, email: string, password: string, courses: array of strings, favorites: array of strings
+    */
+
+        function insertUserData(id, name, email, password, courses, favorites) {
+
+          const data = `{"id":"${id}","name":"${name}","email":"${email}","password":"${password}","courses":"${courses}","favorites":"${favorites}"}`;
+  
+          axios.post("http://127.0.0.1:5000/insert/Users", data, {headers: {
+                          'Access-Control-Allow-Origin': '*',
+                          'Content-Type': 'application/json',
+          }}).catch((error) => {
+              if (error.response) {
+              console.log(error.response)
+              console.log(error.response.status)
+              console.log(error.response.headers)
+              }
+              })
+          }
+
+     
+
 
     const profile = new Profile("bob_smith", "bob_smith@gmail.com", "Computer Science");
   return (
@@ -101,6 +127,8 @@ const MyProfile = () => {
                               <p>Favorites: {userData.user_favorites.map(app => (<li>{app}</li>))}</p>
                             </div>
                         }
+                        
+                        <p>Insert User Data: </p><button onClick={() => insertUserData("1685736281929", "Bob Smith", "bobsmith@illinois.edu", "bobby", ["CS 222", "CS 225"],["CS 222"])}>Click me</button>
                         </div>
                     } 
                     <button> Edit Info</button>   

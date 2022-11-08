@@ -10,7 +10,6 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
   
 const BrowseCourses = () => {
-    const course = new Course("CS222", "4.0");
     const [classData, setClassData] = useState(null)
 
     function getClassData(key, value) {

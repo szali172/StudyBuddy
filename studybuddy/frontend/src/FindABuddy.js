@@ -14,29 +14,52 @@ const FindABuddy = () => {
     const [postname, setName] = useState("")
     const [location, setLocation] = useState("")
     const [description, setDescription] = useState("")
+
     function getPostData(key, value) {
-        axios({
-          method: "GET",
-          url:"http://127.0.0.1:5000/get/Posts/"+key+"="+value,
+      axios({
+        method: "GET",
+        url:"http://127.0.0.1:5000/get/Posts/"+key+"="+value,
+      })
+      .then((response) => {
+        const res =response.data
+        console.log(res)
+        setPostData(({
+          post_id: res["post_id"],
+          op_id: res["op_id"],
+          ts: res["ts"],
+          location: res["location"],
+          content: res["content"],
+          comments: res["comments"]
+        }))
+      }).catch((error) => {
+        if (error.response) {
+          console.log(error.response)
+          console.log(error.response.status)
+          console.log(error.response.headers)
+          }
+      })}
+
+       /*
+     Inserts a post into the 'Posts' collection of the database given arguments
+      post_id: string, op_id: string, ts: string, location: string, content: string comments: array of strings
+    */
+
+    function insertPostData(post_id, op_id, ts, location, content, comments) {
+      
+      const data = `{"post_id":"${post_id}","op_id":"${op_id}","ts":"${ts}","location":"${location}","content":"${content}","comments":"${comments}"}`;
+     
+      axios.post("http://127.0.0.1:5000/insert/Posts", data, {headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json',
+    }}).catch((error) => {
+        if (error.response) {
+          console.log(error.response)
+          console.log(error.response.status)
+          console.log(error.response.headers)
+          }
         })
-        .then((response) => {
-          const res =response.data
-          console.log(res)
-          setPostData(({
-            post_id: res["post_id"],
-            op_id: res["op_id"],
-            ts: res["ts"],
-            location: res["location"],
-            content: res["content"],
-            comments: res["comments"]
-          }))
-        }).catch((error) => {
-          if (error.response) {
-            console.log(error.response)
-            console.log(error.response.status)
-            console.log(error.response.headers)
-            }
-        })}
+    }
+  
     
 
     const NameHandleChange = e => {
@@ -148,12 +171,12 @@ const FindABuddy = () => {
                         <h5>Name: {postname}</h5>
                         <h5>Location: {location}</h5>
                         <h5>Description: {description}</h5>
-        
-                        <button onClick={buddyButton.makePost(`${postname}`, `${location}`, `${description}`)}>Submit</button> 
-                        
+                        <button onClick={() => insertPostData("4567898765638", "1685736281929", "2022-11-6 21:42:26.423489" , location.toString(), description.toString())}>MAKE POST</button>
+
+                                
                     </form>
                     } 
-                      <p>To get Post details: </p><button onClick={() => getPostData('post_id', 'h6Gw4320PMkq1e')}>Click me</button>
+                      <p>To get Post details: </p><button onClick={() => getPostData('post_id', '4567898765638')}>Click me</button>
                         {postData && <div>
                             <p>Time: {postData.ts}</p>
                             <p>Location: {postData.location}</p>

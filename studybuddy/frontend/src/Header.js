@@ -2,6 +2,8 @@ import React from "react";
 import Button from '@mui/material/Button';
 import { Nav, NavLink, NavMenu } 
     from "./NavBarElements";
+import { Link } from 'react-router-dom'
+
 
 const Navbar = () => {
 return (
@@ -25,9 +27,12 @@ return (
       </NavLink>
 
 
-      <Button href="#" variant="outlined" sx={{ my: 1, mx: 1.5 }}>
-            Login
-          </Button>
+
+      <Link to={"/login"}>
+      <Button variant="outlined" sx={{ my: 1, mx: 1.5 }}>
+        Login
+      </Button>
+      </Link>
       
     </NavMenu>
   </Nav>

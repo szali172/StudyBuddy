@@ -6,23 +6,51 @@
 
 
 import { render, fireEvent, screen } from "@testing-library/react";
-import Counter from "../components/Counter";
+import MyProfile from './MyProfile';
+import FindABuddy from './FindABuddy';
+import BrowseCourses from './BrowseCourses';
 
-//test block
-describe("<Button />", () => {
-    test("Should render label correctly", () => {
-      const { getByText } = makeSut({ label: "Go to page" });
-  
-      expect(getByText(/Go to page/)).toBeInTheDocument();
-    });
-  
-    test("Should call onClick successfully", () => {
-      const spy = jest.fn();
-  
-      const { getByText } = makeSut({ onClick: spy });
-  
-      fireEvent.click(getByText(/label/));
-  
-      expect(spy).toHaveBeenCalled();
-    });
+//myProfile test block
+describe(MyProfile, () => {
+  test("should get profile information right", () => {
+    const spy = jest.fn();
+    const { getByText } = makeSut({ onClick: spy });
+    fireEvent.click(getByText("Click me"));
+    expect(spy).toHaveBeenCalled();
+    expect(getByText("John Smith")).toBeInTheDocument();
+    expect(getByText("jsmith@illinois.edu")).toBeInTheDocument();
+    expect(getByText("CS 222")).toBeInTheDocument();
+    expect(getByText("CS 225")).toBeInTheDocument();
+
   });
+});
+
+
+//FindABuddy test block
+describe(FindABuddy, () => {
+  test("should get post information right", () => {
+    const spy = jest.fn();
+    const { getByText } = makeSut({ onClick: spy });
+    fireEvent.click(getByText("Click me"));
+
+    expect(spy).toHaveBeenCalled();
+    expect(getByText("2022-10-12 16:39:39.596758")).toBeInTheDocument();
+    expect(getByText("Grainger Library 4th Floor")).toBeInTheDocument();
+    expect(getByText("Hey, I'm looking to work on ... Anyone else?")).toBeInTheDocument();
+  });
+});
+
+
+//Browse test block
+describe(BrowseCourses, () => {
+  test("should get course information right", () => {
+    const spy = jest.fn();
+    const { getByText } = makeSut({ onClick: spy });
+    fireEvent.click(getByText("Click me"));
+
+    expect(spy).toHaveBeenCalled();
+    expect(getByText("2021")).toBeInTheDocument();
+    expect(getByText("Intro Asian American Studies")).toBeInTheDocument();
+    expect(getByText("Zheng, Reanne")).toBeInTheDocument();
+  });
+});
