@@ -57,12 +57,20 @@ def delete(coll, value):
         return f'Could not access {coll}\n', 400
     
     # Ensure field passed is an id
-    cursor = collection.find_one({'id': value})
+    if coll == 'Users':
+        cursor = collection.find_one({'id': value})
+    else:
+        cursor = collection.find_one({'post_id': value})
     
     if cursor:
-        collection.delete_one({'id': value})
-        if coll == 'Posts': return f'Successfully deleted post \'{value}\' from \'{coll}\'', 200
-        else: return f'Successfully deleted user \'{value}\' from \'{coll}\'', 200
+        
+        if coll == 'Users': 
+            collection.delete_one({'id': value}) 
+            return f'Successfully deleted user \'{value}\' from \'{coll}\'', 200
+        else:
+            collection.delete_one({'post_id': value})
+            return f'Successfully deleted post \'{value}\' from \'{coll}\'', 200
+            
     else:
         return 'Could not find any document with field {\'id\' : \'%s\'} in the %s collection'.format(value, coll), 400
     
@@ -114,12 +122,15 @@ def insert_comment(post_id):
     cursor = collection.find_one({"post_id": post_id})
     
     if cursor:
-        comment = json.loads(request.json)
+        comment = json.loads(json.dumps(request.json))
         
         response, status = validate_entry.validate_comment_entry(database, comment, "insert")
-        
+        print(status)
+        print("1")
         if status == 200:
+            print("2")
             collection.update_one({"post_id": post_id}, {'$push': {"comments": comment}})
+            print("3")
             return f'Successfully added comment to post {post_id}', status
         elif status == 500:
             return f'Internal server error: {response}', status
