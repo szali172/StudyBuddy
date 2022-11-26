@@ -85,6 +85,12 @@ function App() {
     })}
 
 
+      /*
+    Retrieve course average GPA given the course name
+    
+    Stores the information in the GPA variable
+    */
+
     function getGPA(title) {
       getClassData("Course%20Title", title);
       var total = (parseInt(classData.a_plus)* 4) + (parseInt(classData.a) * 4) + (parseInt(classData.a_minus) * 3.67) + (parseInt(classData.b_plus) * 3.33) + (parseInt(classData.b) * 3) + (parseInt(classData.b_minus) * 2.67) + (parseInt(classData.c_plus) * 2.33) + (parseInt(classData.c) * 2) + (parseInt(classData.c_minus) * 1.67) + (parseInt(classData.d_plus) * 1.33) + (parseInt(classData.d * 1)) + (parseInt(classData.d_minus) * 0.67)
