@@ -8,6 +8,7 @@ function App() {
   const [userData, setUserData] = useState(null)
   const [classData, setClassData] = useState(null)
   const [postData, setPostData] = useState(null)
+  const [GPA, setGPA] = useState(null)
 
   /*
   Retrieve user data given a key (i.e. name, email, id) and a value ("John Smith", "jsmith@illinois.edu", "12sd31S2P0")
@@ -82,6 +83,16 @@ function App() {
         console.log(error.response.headers)
         }
     })}
+
+
+    function getGPA(title) {
+      getClassData("Course%20Title", title);
+      var total = (parseInt(classData.a_plus)* 4) + (parseInt(classData.a) * 4) + (parseInt(classData.a_minus) * 3.67) + (parseInt(classData.b_plus) * 3.33) + (parseInt(classData.b) * 3) + (parseInt(classData.b_minus) * 2.67) + (parseInt(classData.c_plus) * 2.33) + (parseInt(classData.c) * 2) + (parseInt(classData.c_minus) * 1.67) + (parseInt(classData.d_plus) * 1.33) + (parseInt(classData.d * 1)) + (parseInt(classData.d_minus) * 0.67)
+      var gpa = (total / (parseInt(classData.a_plus) + parseInt(classData.a) + parseInt(classData.a_minus) + parseInt(classData.b_plus) + parseInt(classData.b) + parseInt(classData.b_minus) + parseInt(classData.c_plus) + parseInt(classData.c) + parseInt(classData.c_minus) + parseInt(classData.d_plus) + parseInt(classData.d) + parseInt(classData.d_minus) + parseInt(classData.f))).toFixed(2)
+      setGPA(({
+        "gpa": gpa,
+      }))
+    }
 
   /*
   Retrieve post data given a key (i.e. post id, Location, time) and a value ("h6Gw4320PMkq1e", "Grainger Library 4th Floor", "2022-10-12 16:39:39.596758")
@@ -248,6 +259,12 @@ function App() {
         <p>Delete Post</p><button onClick={() => deletePost("4567898765638")}>Delete Post</button>
 
         <p>Insert Comment</p><button onClick={() => insertCommentToPost("h6Gw4320PMkq1e", "1685736281929", "Lets study for 233!" )}>Insert Comment</button>
+
+        <p>Get GPA</p><button onClick={() => console.log(getGPA("Atg%20Institutions%20and%20Reg"))}>Get GPA</button>
+        {GPA && <div>
+              <p>GPA: {GPA.gpa}</p>
+            </div>
+        }
 
       </header>
     </div>
