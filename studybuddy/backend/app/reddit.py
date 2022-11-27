@@ -1,0 +1,51 @@
+### Imports
+from flask import Blueprint
+import datetime, json, sys
+
+# Utilities
+sys.path.append('../')
+import utils.credentials as c
+import utils.validate_entry as validate_entry
+
+
+reddit = Blueprint('reddit_blueprint', __name__)
+
+
+""" Connect to Reddit API """
+import praw
+r = praw.Reddit(client_id=c.praw_client_id, client_secret=c.praw_client_secret, user_agent=c.praw_user_agent)
+    
+    
+### Routes
+@reddit.route('/reddit_posts/<sub>/<topic>', methods=['GET'])
+def get_reddit_posts(sub, topic):
+    """
+    Retrieve the top posts given a subreddit and search topic
+    """    
+    
+    subreddit = r.subreddit(sub)
+    
+    posts = []
+    for i, post in enumerate(subreddit.search(topic, limit=10)):
+        date = datetime.datetime.fromtimestamp(post.created_utc).strftime(validate_entry.DATETIME_FORMAT)
+        post_properties = {"author": str(post.author),
+                           "date": date,
+                           "id": post.id,
+                           "num_comments": post.num_comments,
+                           "over_18": post.over_18,
+                           "permalink": post.permalink,
+                           "score": post.score,
+                           "spoiler": post.spoiler,
+                           "title": post.title}
+        posts.append(post_properties)
+                
+    return json.dumps(posts, default=str), 200
+
+
+
+def connect_to_reddit():
+    """
+    Connect to Reddit API
+    """
+    import praw
+    r = praw.Reddit(client_id=c.praw_client_id, client_secret=c.praw_client_secret, user_agent=c.praw_user_agent)

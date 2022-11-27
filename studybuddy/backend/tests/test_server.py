@@ -1,3 +1,5 @@
+import pytest
+
 test_db = {
     "Users": {
         "_id":"63339af0f5bbd2004b1da743", # Mongo's BSON ObjectID as a string
@@ -33,5 +35,12 @@ test_db = {
     }
 }
 
-# Example print
-# print(test_db["Posts"]["comments"][0]["user_id"])
+@pytest.fixture
+def client():
+    db_fd, flaskr.app.config['DATABASE'] = tempfile.mkstemp()
+    flaskr.app.config['TESTING'] = True
+
+    with flaskr.app.test_client() as client:
+        with flaskr.app.app_context():
+            flaskr.init_db()
+        yield client
