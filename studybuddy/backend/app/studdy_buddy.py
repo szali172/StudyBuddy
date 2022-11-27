@@ -55,7 +55,10 @@ def delete(coll, value):
         return f'Could not access {coll}\n', 400
     
     # Ensure field passed is an id
-    cursor = collection.find_one({'id': value})
+    if coll == 'Users':
+        cursor = collection.find_one({'id': value})
+    else:
+        collection.find_one({'post_id': value})
     
     if cursor:
         collection.delete_one({'id': value})
