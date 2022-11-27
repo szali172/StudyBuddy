@@ -1,4 +1,4 @@
-import datetime, pytz
+import datetime
 
 USER_FIELDS = ['id', 'name', 'email', 'password', 'courses', 'favorites']
 POST_FIELDS = ['post_id', 'op_id', 'ts', 'location', 'content', 'comments']
@@ -54,7 +54,7 @@ def validate_comment_entry(database, comment, method):
     """
     
     # Validate server-side function call
-    if method != 'insert' or method != 'update':
+    if method != 'insert' and method != 'update':
         return f"Bad method name \'{method}\' when validating entry", 500
         
     # Validate JSON fields
@@ -64,13 +64,13 @@ def validate_comment_entry(database, comment, method):
         
     # Validate user exists
     response, status = user_exists(database, comment, 'comment')
+    print(status)
     if status != 200:
         return response, status
-    
-    # Validate timestamp format
-    response, status = timestamp(comment)
-    if status != 200:
-        return response, status
+    # # Validate timestamp format
+    # response, status = timestamp(comment)
+    # if status != 200:
+    #     return response, status
     
     return 'Comment valid', 200
 
@@ -113,8 +113,8 @@ def user_exists(database, entry, entry_type):
         return "Bad entry type \'{entry_type}\' when validating entry", 500
     
     users_coll = database['Users']
-    user_entry = users_coll.find_one({'id': entry[id]})
-    
+    print(entry[id])
+    user_entry = users_coll.find_one({'id': entry[id]})    
     if not user_entry:
         return f"User with id \'{entry[id]}\' not found. Check user_id", 400
     

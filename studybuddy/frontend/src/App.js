@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import axios from "axios";
-import logo from './logo.svg';
+import axios from "axios"
+import logo from './logo.svg'
 import './App.css';
 
 function App() {
@@ -8,7 +8,7 @@ function App() {
   const [userData, setUserData] = useState(null)
   const [classData, setClassData] = useState(null)
   const [postData, setPostData] = useState(null)
-
+  const [GPA, setGPA] = useState(null)
 
   /*
   Retrieve user data given a key (i.e. name, email, id) and a value ("John Smith", "jsmith@illinois.edu", "12sd31S2P0")
@@ -18,7 +18,7 @@ function App() {
   function getUserData(key,value) {
     axios({
       method: "GET",
-      url:"http://127.0.0.1:5000/Users/"+key+"/"+value,
+      url:"http://127.0.0.1:5000/get/Users/"+key+"="+value,
     })
     .then((response) => {
       const res =response.data
@@ -37,6 +37,8 @@ function App() {
         }
     })}
 
+
+
   /*
   Retrieve course data given a key (i.e. subject, number, course title) and a value ("CS", "225", "Data Structures")
   
@@ -45,7 +47,7 @@ function App() {
   function getClassData(key, value) {
     axios({
       method: "GET",
-      url:"http://127.0.0.1:5000/classes/"+key+"/"+value,
+      url:"http://127.0.0.1:5000/get/classes/"+key+"="+value,
     })
     .then((response) => {
       const res =response.data
@@ -82,6 +84,22 @@ function App() {
         }
     })}
 
+
+      /*
+    Retrieve course average GPA given the course name
+    
+    Stores the information in the GPA variable
+    */
+
+    function getGPA(title) {
+      getClassData("Course%20Title", title);
+      var total = (parseInt(classData.a_plus)* 4) + (parseInt(classData.a) * 4) + (parseInt(classData.a_minus) * 3.67) + (parseInt(classData.b_plus) * 3.33) + (parseInt(classData.b) * 3) + (parseInt(classData.b_minus) * 2.67) + (parseInt(classData.c_plus) * 2.33) + (parseInt(classData.c) * 2) + (parseInt(classData.c_minus) * 1.67) + (parseInt(classData.d_plus) * 1.33) + (parseInt(classData.d * 1)) + (parseInt(classData.d_minus) * 0.67)
+      var gpa = (total / (parseInt(classData.a_plus) + parseInt(classData.a) + parseInt(classData.a_minus) + parseInt(classData.b_plus) + parseInt(classData.b) + parseInt(classData.b_minus) + parseInt(classData.c_plus) + parseInt(classData.c) + parseInt(classData.c_minus) + parseInt(classData.d_plus) + parseInt(classData.d) + parseInt(classData.d_minus) + parseInt(classData.f))).toFixed(2)
+      setGPA(({
+        "gpa": gpa,
+      }))
+    }
+
   /*
   Retrieve post data given a key (i.e. post id, Location, time) and a value ("h6Gw4320PMkq1e", "Grainger Library 4th Floor", "2022-10-12 16:39:39.596758")
   
@@ -90,7 +108,7 @@ function App() {
   function getPostData(key, value) {
     axios({
       method: "GET",
-      url:"http://127.0.0.1:5000/Posts/"+key+"/"+value,
+      url:"http://127.0.0.1:5000/get/Posts/"+key+"="+value,
     })
     .then((response) => {
       const res =response.data
@@ -110,6 +128,102 @@ function App() {
         console.log(error.response.headers)
         }
     })}
+
+
+    /*
+     Inserts a user into the 'Users' collection of the database given arguments
+      id: string, name: string, email: string, password: string, courses: array of strings, favorites: array of strings
+    */
+
+    function insertUserData(id, name, email, password, courses, favorites) {
+      const data = `{"id":"${id}","name":"${name}","email":"${email}","password":"${password}","courses":"${courses}","favorites":"${favorites}"}`;
+
+      axios.post("http://127.0.0.1:5000/insert/Users", data, {headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json',
+    }}).catch((error) => {
+        if (error.response) {
+          console.log(error.response)
+          console.log(error.response.status)
+          console.log(error.response.headers)
+          }
+        })
+    }
+
+     /*
+     Inserts a post into the 'Posts' collection of the database given arguments
+      post_id: string, op_id: string, ts: string, location: string, content: string comments: array of strings
+    */
+
+    function insertPostData(post_id, op_id, location, content, comments) {
+      var ts = Date(Date.now()).toString()
+      const data = `{"post_id":"${post_id}","op_id":"${op_id}","ts":"${ts}","location":"${location}","content":"${content}","comments":"${comments}"}`;
+     
+      axios.post("http://127.0.0.1:5000/insert/Posts", data, {headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json',
+    }}).catch((error) => {
+        if (error.response) {
+          console.log(error.response)
+          console.log(error.response.status)
+          console.log(error.response.headers)
+          }
+        })
+    }
+
+     /*
+     Inserts a comment into the 'Posts' collection of the database given the post_id
+      post_id: string
+    */
+
+      function insertCommentToPost(post_id, user_id, content) {
+        var ts = Date(Date.now()).toString()
+        const data = `{"user_id":"${user_id}","ts":"${ts}","content":"${content}"}`;
+       
+        axios.put("http://127.0.0.1:5000/insert_comment/post_id="+post_id, data, {headers: {
+                      'Access-Control-Allow-Origin': '*',
+                      'Content-Type': 'application/json',
+      }}).catch((error) => {
+          if (error.response) {
+            console.log(error.response)
+            console.log(error.response.status)
+            console.log(error.response.headers)
+            }
+          })
+      }
+
+    /*
+     Deletes a user with a given id
+    */
+
+    function deleteUser(id) {
+      axios({
+        url:"http://127.0.0.1:5000/delete/Users/id="+id,
+      }).catch((error) => {
+        if (error.response) {
+          console.log(error.response)
+          console.log(error.response.status)
+          console.log(error.response.headers)
+          }
+      })
+    }
+
+
+    /*
+     Deletes a post with a given post_id
+    */
+
+     function deletePost(post_id) {
+      axios({
+        url:"http://127.0.0.1:5000/delete/Posts/id="+post_id,
+      }).catch((error) => {
+        if (error.response) {
+          console.log(error.response)
+          console.log(error.response.status)
+          console.log(error.response.headers)
+          }
+      })
+    }
 
   return (
     <div className="App">
@@ -134,7 +248,6 @@ function App() {
             </div>
         }
 
-
         <p>To get Post details: </p><button onClick={() => getPostData('post_id', 'h6Gw4320PMkq1e')}>Click me</button>
         {postData && <div>
               <p>Time: {postData.ts}</p>
@@ -142,6 +255,23 @@ function App() {
               <p>Content: {postData.content}</p>
             </div>
         }
+
+        <p>Insert User Data: </p><button onClick={() => insertUserData("1685736281929", "Bob Smith", "bobsmith@illinois.edu", "bobby", ["CS 222", "CS 225"],["CS 222"])}>Click me</button>
+
+        <p>Insert Post Data: </p><button onClick={() => insertPostData("4567898765639", "1685736281929", "2022-11-6 21:42:26.423489" , "Siebel CS", "Someone want to study for CS 361 with me?", [{"user_id":"12D32423kbJK11","ts":"2022-10-12 16:49:39.596765","content":"Yeah I'm down! What time?"},{"user_id":"9as7dfh23hkjWs","ts":"2022-10-12 16:54:39.596771","content":"Same here. Did you figure out how to do #4? I'm free to meet up at 7pm!"},{"user_id":"12D32423kbJKH9","ts":"2022-10-12 16:56:39.596775","content":"I did figure that one out! 7pm works with me if you guys are all free"}])}>Click me</button>
+
+        <p>Delete user</p><button onClick={() => deleteUser("1685736281929")}>Delete User</button>
+
+        <p>Delete Post</p><button onClick={() => deletePost("4567898765638")}>Delete Post</button>
+
+        <p>Insert Comment</p><button onClick={() => insertCommentToPost("h6Gw4320PMkq1e", "1685736281929", "Lets study for 233!" )}>Insert Comment</button>
+
+        <p>Get GPA</p><button onClick={() => console.log(getGPA("Atg%20Institutions%20and%20Reg"))}>Get GPA</button>
+        {GPA && <div>
+              <p>GPA: {GPA.gpa}</p>
+            </div>
+        }
+
       </header>
     </div>
   );

@@ -1,5 +1,6 @@
 ### Imports
 from flask import Blueprint, request
+from flask_cors import CORS
 import requests, datetime, json, sys
 
 # Utilities
@@ -7,7 +8,9 @@ sys.path.append('../')
 import utils.credentials as c
 import utils.validate_entry as validate_entry
 
+
 studdy_buddy = Blueprint('studdy_buddy', __name__)
+CORS(studdy_buddy)
 
     
 """ Connect to Mongo DB """
@@ -58,16 +61,22 @@ def delete(coll, value):
     if coll == 'Users':
         cursor = collection.find_one({'id': value})
     else:
-        collection.find_one({'post_id': value})
+        cursor = collection.find_one({'post_id': value})
     
     if cursor:
-        collection.delete_one({'id': value})
-        if coll == 'Posts': return f'Successfully deleted post \'{value}\' from \'{coll}\'', 200
-        else: return f'Successfully deleted user \'{value}\' from \'{coll}\'', 200
+        
+        if coll == 'Users': 
+            collection.delete_one({'id': value}) 
+            return f'Successfully deleted user \'{value}\' from \'{coll}\'', 200
+        else:
+            collection.delete_one({'post_id': value})
+            return f'Successfully deleted post \'{value}\' from \'{coll}\'', 200
+            
     else:
         return 'Could not find any document with field {\'id\' : \'%s\'} in the %s collection'.format(value, coll), 400
     
     
+
 
 @studdy_buddy.route('/insert/<coll>', methods=['POST'])
 def insert(coll):
@@ -77,7 +86,6 @@ def insert(coll):
     **JSON**: contains post or user in a dictionary format. MUST contain all fields 
                 (comments array for post may be empty, courses and favorites for user may be empty)
     """
-
     # Check to see if collection exists
     try:
         collection = database[coll] # either users or posts
@@ -90,7 +98,7 @@ def insert(coll):
         entry = json.loads(json_field)
     elif isinstance(json_field, dict):
         entry = json_field
-    
+
     # Handle entry separately depending on collection specified
     if coll == 'Posts':
         response, status = validate_entry.validate_post_entry(database, entry, 'insert')
@@ -122,12 +130,15 @@ def insert_comment(post_id):
     cursor = collection.find_one({"post_id": post_id})
     
     if cursor:
-        comment = json.loads(request.json)
+        comment = json.loads(json.dumps(request.json))
         
         response, status = validate_entry.validate_comment_entry(database, comment, "insert")
-        
+        print(status)
+        print("1")
         if status == 200:
+            print("2")
             collection.update_one({"post_id": post_id}, {'$push': {"comments": comment}})
+            print("3")
             return f'Successfully added comment to post {post_id}', status
         elif status == 500:
             return f'Internal server error: {response}', status
