@@ -1,32 +1,33 @@
-from flask import Flask, render_template, request, jsonify
-import requests, datetime, json
-import credentials as c
-import validate_entry
+### Imports
+from flask import Blueprint, request
 from flask_cors import CORS
+import requests, datetime, json, sys
+
+# Utilities
+sys.path.append('../')
+import utils.credentials as c
+import utils.validate_entry as validate_entry
 
 
-app = Flask(__name__)
-CORS(app)
+studdy_buddy = Blueprint('studdy_buddy', __name__)
+CORS(studdy_buddy)
 
+    
 """ Connect to Mongo DB """
 from pymongo import MongoClient
 cluster = MongoClient(f'mongodb+srv://{c.username}:{c.pw}@studdybuddy.ptwaiia.mongodb.net/?retryWrites=true&w=majority')
 database = cluster["buddies"]
 
-""" Connect to Reddit API """
-import praw
-reddit = praw.Reddit(client_id=c.praw_client_id, client_secret=c.praw_client_secret, user_agent=c.praw_user_agent)
 
-
-
-"""
-Retrieve a document from either the 'Posts' or 'Users' collection 
-    given a key (i.e. name, email, id) and a value ("John Smith", "jsmith@illinois.edu", "12sd31S2P0")
-    
-Returns a json object containing all fields of the DB entry
-"""
-@app.route('/get/<coll>/<key>=<value>')
+### Routes
+@studdy_buddy.route('/get/<coll>/<key>=<value>')
 def get(coll, key, value):
+    """
+    Retrieve a document from either the 'Posts' or 'Users' collection 
+        given a key (i.e. name, email, id) and a value ("John Smith", "jsmith@illinois.edu", "12sd31S2P0")
+        
+    Returns a json object containing all fields of the DB entry
+    """
     
     # Check to see if collection exists
     try:
@@ -42,13 +43,13 @@ def get(coll, key, value):
         return 'Could not find any document with field {\'%s\' : \'%s\'} in the %s collection'.format(key, value, coll), 400   
     
     
-    
-"""
-Delete a document from either the 'Posts' or 'Users' collection 
-    given an ONLY an id key and a value. Cannot delete by name, email, or any other field besides id
-"""
-@app.route('/delete/<coll>/id=<value>')
+
+@studdy_buddy.route('/delete/<coll>/id=<value>')
 def delete(coll, value):
+    """
+    Delete a document from either the 'Posts' or 'Users' collection 
+        given an ONLY an id key and a value. Cannot delete by name, email, or any other field besides id
+    """
     
     # Check to see if collection exists
     try:
@@ -76,21 +77,28 @@ def delete(coll, value):
     
     
 
-"""
-Inserts a document into either the 'Posts' or 'Users' collection
-    with a given JSON encoded into the HTTP request
-**JSON**: contains post or user in a dictionary format. MUST contain all fields 
-            (comments array for post may be empty, courses and favorites for user may be empty)
-"""
-@app.route('/insert/<coll>', methods=['POST'])
-def insert(coll):  
+
+@studdy_buddy.route('/insert/<coll>', methods=['POST'])
+def insert(coll):
+    """
+    Inserts a document into either the 'Posts' or 'Users' collection
+        with a given JSON encoded into the HTTP request
+    **JSON**: contains post or user in a dictionary format. MUST contain all fields 
+                (comments array for post may be empty, courses and favorites for user may be empty)
+    """
     # Check to see if collection exists
     try:
         collection = database[coll] # either users or posts
     except:
         return f'Could not access {coll}\n', 400
-    
-    entry = json.loads(json.dumps(request.json))
+
+    # JSON manipulation
+    json_field = request.json
+    if isinstance(json_field, str):
+        entry = json.loads(json_field)
+    elif isinstance(json_field, dict):
+        entry = json_field
+
     # Handle entry separately depending on collection specified
     if coll == 'Posts':
         response, status = validate_entry.validate_post_entry(database, entry, 'insert')
@@ -109,13 +117,13 @@ def insert(coll):
 
 
 
-"""
-Inserts a comment to a post given a unique ID of the post (post_id)
-**JSON**: contains comment in a dictionary format, i.e.
-          {"user_id":"12D32423kbJK11","ts":"2022-10-12 16:49:39.596765","content":"text"}
-"""
-@app.route('/insert_comment/post_id=<post_id>', methods=['PUT']) 
+@studdy_buddy.route('/insert_comment/post_id=<post_id>', methods=['PUT']) 
 def insert_comment(post_id):
+    """
+    Inserts a comment to a post given a unique ID of the post (post_id)
+    **JSON**: contains comment in a dictionary format, i.e.
+            {"user_id":"12D32423kbJK11","ts":"Wed Nov 16 2022 12:35:56 GMT-0600 (Central Standard Time)","content":"text"}
+    """
     
     # Search for post
     collection = database['Posts']
@@ -141,16 +149,14 @@ def insert_comment(post_id):
     
 
 
-### TODO: implement an update route, url should accept a coll, search_key=search_value to lookup item, and a key=value to update the found item
-    ### may need to allow update route to take a json so that multiple fields can be updated at once
-"""
-Updates an entry given a collection ('Users' or 'Posts')
-    and a search_key and search_value, which the entry to be updated will be initially found with
-**JSON**: an array of fields with for a user or post, i.e.
-          {"name":"Johnny Smith"} or {"name":"Johnny Smith", "email":"jsmith92@illinois.edu"} , etc...
-"""
-@app.route('/update/<coll>/<search_key>=<search_value>', methods=['PUT']) 
+@studdy_buddy.route('/update/<coll>/<search_key>=<search_value>', methods=['PUT']) 
 def update(coll, search_key, search_value):
+    """
+    Updates an entry given a collection ('Users' or 'Posts')
+        and a search_key and search_value, which the entry to be updated will be initially found with
+    **JSON**: an array of fields with for a user or post, i.e.
+            {"name":"Johnny Smith"} or {"name":"Johnny Smith", "email":"jsmith92@illinois.edu"} , etc...
+    """
     
     # Check to see if collection exists
     try:
@@ -180,28 +186,3 @@ def update(coll, search_key, search_value):
         return 'Could not find any document with field {\'%s\' : \'%s\'} in the %s collection'.format(search_key, 
                                                                                                       search_value, 
                                                                                                       coll), 400
-    
-    
-    
-"""
-Retrieve the top posts given a subreddit and search topic
-"""
-@app.route('/reddit_posts/<sub>/<topic>', methods=['GET'])
-def get_reddit_posts(sub, topic):
-    subreddit = reddit.subreddit(sub)
-    
-    for i, post in enumerate(subreddit.search(topic, limit=10)):
-        print(post.title)
-        
-    return '', 200
-
-
-
-# TODO: Implement a cache
-# TODO: Implement a backup database for users (in case of user deletion)
-
-
-
-# curl -X GET http://localhost:5000/get/Posts/post_id=h6Gw4320PMkq1e
-# curl -X GET http://localhost:5000/get/Users/email=jsmith@illinois.edu
-# %20 represents space
