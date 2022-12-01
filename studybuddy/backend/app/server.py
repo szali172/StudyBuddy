@@ -1,67 +1,118 @@
 ### Imports
 from flask import Flask, request
-import threading, atexit, signal, sys
+import threading, atexit, signal, sys, datetime, time, requests, heapq
+
+# App
+Server = Flask(__name__)
+
+# Blueprints
+from reddit import Reddit
+from studdy_buddy import StuddyBuddy
+
+Server.register_blueprint(Reddit)
+Server.register_blueprint(StuddyBuddy)
 
 # Utilities
 sys.path.append('../')
 import utils.credentials as c
 import utils.validate_entry as validate_entry
+from utils.heap_queue import HeapQueue
 
-# Blueprints
-from reddit import reddit
-from studdy_buddy import studdy_buddy
-
-server = Flask(__name__)
-server.register_blueprint(reddit)
-server.register_blueprint(studdy_buddy)
+HOST = 'http://localhost'
+PORT = '5000'
+processes = []
+heap_queue = HeapQueue(HOST, PORT)
 
 
 ### Routes
-@server.route('/refresh_queue', methods=['GET'])
-def refresh_posts_queue(sub, topic):
-    """
-    
-    """
-    pass
-
-
 def start_server():
-    server.run(port=5000, debug=False, threaded=True)
-    
+    Server.run(port=5000, debug=False, threaded=True)
+
 
 @atexit.register  
 def shutdown_server():
     """
     Called when server exits (Ctrl+C signal and from /shutdown endpoint)
     """
+    # Terminate all running subprocesses
+    for process in processes:
+        process.terminate()
+        
     func = request.environ.get('werkzeug.server.shutdown')
-    
     if func is None:
         raise RuntimeError('Not running with the Werkzeug Server')
-    
     func()
-    print('Terminating Server...\n')
+    
+    return 'Terminating Server...\n', 200
 
 
-@server.route('/shutdown/token=<token>')
+@Server.route('/shutdown/token=<token>')
 def shutdown(token):
     """
     Called to shutdown server manually.
     Token must match token credential
     """
     if token == c.token:
-        shutdown_server()  
+        resp, status = shutdown_server()
+        return resp, status
         
-    return 'Incorrect token\n', 400
+    return 'Incorrect token\n', 403 # Forbidden
+
+
+
+def maintain_queue(hq):    
+    # Loop forever until server closes
+    while not hq.server_closed:
+        
+        # Sleep for one hour
+        time.sleep(60 * 60 * 60)
+        
+        # Reevaluate after waking up
+        if hq.server_closed == True:
+            break
+        
+        # If empty, sanity check and reset queue
+        if hq.is_empty():
+            hq.reset_queue()    
+        
+        three_days = datetime.datetime.now() - datetime.timedelta(days=3)
+        print(three_days)
+        
+        # Check queue (after repopulating)
+        while not hq.is_empty():
+        
+            # Pop front of queue if time is longer than three days
+            # Send a request to delete post from db
+            if hq.queue[0][0] >= three_days:
+                heapq.heappop(hq.queue)
+                requests.get(f'{HOST}:{PORT}/delete/Posts/id={hq[0][1]}/stale_post={True}')
+
 
 
 if __name__ == '__main__':
     
-    print("Server starting...")
+    # Start server
+    print('Server starting...')
     server_thread = threading.Thread(target=start_server)
     server_thread.start()
-    print("Server started!")
+    print('Server started!')
+    
+    # # Start Posts queue
+    # print('Booting up Posts queue...')
+    # hq.initialize()
+    # queue_proc = subprocess.Popen(['python', 'heap_queue.py'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    # out, err = queue_proc.communicate()
+    # print('Queue live!')
+    
+    # Add subprocesses to list of running daemon tasks
+    # processes.append(queue_proc)
         
+    # q = heap_queue.initialize()
+    # print("Opening posts queue...")
+    # queue_thread = threading.Thread(target=maintain_queue(heap_queue))
+    # queue_thread.start()
+    # print("Queue open!")
+    
     # Ctrl+C signals server shutdown
     signal.signal(signal.SIGINT, shutdown_server)
     
