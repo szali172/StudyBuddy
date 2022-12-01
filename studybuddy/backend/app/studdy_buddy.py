@@ -1,5 +1,6 @@
 ### Imports
 from flask import Blueprint, request, jsonify
+from flask_cors import CORS
 import requests, datetime, json, sys
 
 # Utilities
@@ -8,6 +9,8 @@ import utils.credentials as c
 import utils.validate_entry as validate_entry
 
 StuddyBuddy = Blueprint('studdy_buddy', __name__)
+CORS(StuddyBuddy)
+
     
 # Connect to Mongo DB
 from pymongo import MongoClient
@@ -166,12 +169,15 @@ def insert_comment(post_id):
     cursor = collection.find_one({"post_id": post_id})
     
     if cursor:
-        comment = json.loads(request.json)
+        comment = json.loads(json.dumps(request.json))
         
         response, status = validate_entry.validate_comment_entry(database, comment, "insert")
-        
+        print(status)
+        print("1")
         if status == 200:
+            print("2")
             collection.update_one({"post_id": post_id}, {'$push': {"comments": comment}})
+            print("3")
             return f'Successfully added comment to post {post_id}', status
         elif status == 500:
             return f'Internal server error: {response}', status

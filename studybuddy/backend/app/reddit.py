@@ -7,7 +7,7 @@ sys.path.append('../')
 import utils.credentials as c
 import utils.validate_entry as validate_entry
 
-Reddit = Blueprint('reddit_blueprint', __name__)
+Reddit = Blueprint('reddit', __name__)
 
 # Connect to Reddit API
 import praw
