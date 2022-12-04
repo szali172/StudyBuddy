@@ -112,8 +112,8 @@ def delete(coll, value, stale_post):
             
             if stale_post:
                 # Remove post from queue
-                from server import heap_queue
-                heap_queue.remove(cursor['post_id'])
+                from server import hq
+                hq.remove(cursor['post_id'])
                 
             return f'Successfully deleted post \'{value}\' from \'{coll}\'', 200
         else:
@@ -163,8 +163,8 @@ def insert(coll):
         
         if coll == 'Posts': 
             # Insert post into posts queue
-            from server import heap_queue
-            heap_queue.insert(entry['ts'], entry['post_id'])
+            from server import hq
+            hq.insert(entry['ts'], entry['post_id'])
             return f'Successfully inserted post \'{entry["post_id"]}\' into \'{coll}\'', 200
         else: 
             return f'Successfully inserted user \'{entry["id"]}\' into \'{coll}\'', 200  
@@ -189,12 +189,9 @@ def insert_comment(post_id):
         comment = json.loads(json.dumps(request.json))
         
         response, status = validate_entry.validate_comment_entry(database, comment, "insert")
-        print(status)
-        print("1")
+
         if status == 200:
-            print("2")
             collection.update_one({"post_id": post_id}, {'$push': {"comments": comment}})
-            print("3")
             return f'Successfully added comment to post {post_id}', status
         elif status == 500:
             return f'Internal server error: {response}', status

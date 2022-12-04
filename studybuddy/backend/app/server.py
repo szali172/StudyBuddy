@@ -21,6 +21,7 @@ from utils.heap_queue import HeapQueue
 HOST = 'http://localhost'
 PORT = '5000'
 processes = []
+global hq
 
 
 ### Routes
