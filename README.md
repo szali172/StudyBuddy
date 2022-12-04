@@ -16,6 +16,26 @@
 
 ## **How To Run**
 
+### After cloning the repository and entering the directory for the project install the node modules by doing
+
+``` npm install ```
+
+### To start the website locally execute these commands in a terminal window
+
+``` 
+cd studybuddy
+cd frontend
+npm start
+```
+
+### To start the backend execute these commands in a new terminal
+```
+cd studybuddy
+cd backend
+cd app
+flask run
+```
+
 &nbsp;
 
 ## `requirements.txt`
