@@ -10,6 +10,7 @@ function App() {
   const [postData, setPostData] = useState(null)
   const [GPA, setGPA] = useState(null)
   const [redditData, setRedditData] = useState(null)
+  const [all, setAll] = useState(null)
 
   /*
   Sleep function to allow for us to wait for the database call
@@ -106,13 +107,10 @@ function App() {
       .then((response) => {
         const res =response.data
         console.log(res)
-        // setUserData(({
-        //   user_id: res["id"],
-        //   user_name: res["name"],
-        //   user_email: res["email"],
-        //   user_courses: res["courses"],
-        //   user_favorites: res["favorites"]
-        // }))
+        console.log(res[0])
+        setAll(({
+          courses: res
+        }))
       }).catch((error) => {
         if (error.response) {
           console.log(error.response)
@@ -354,7 +352,12 @@ function App() {
         }
 
       <p>Check get all</p><button onClick={() => getAll("classes")}>Get all</button>
-
+      {all && <div>
+              <p>1st course: {all.courses[0]["Course Title"]}</p>
+              <p>10th course: {all.courses[10]["Course Title"]}</p>
+              <p>100th course: {all.courses[100]["Course Title"]}</p>
+            </div>
+        }
 
       </header>
     </div>
