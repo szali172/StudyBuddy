@@ -1,6 +1,7 @@
 import React, { useState }from "react";
 import axios from "axios";
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
@@ -10,6 +11,23 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import GlobalStyles from '@mui/material/GlobalStyles';
 import Container from '@mui/material/Container';
+import {id} from './Login';
+
+
+const tiers = [
+  {
+    title: 'My Information',
+    description: [
+      'Come find a friend to study with for any class! Make a post and find other people.',
+    ],
+  },
+  {
+    title: 'My Favorites',
+    description: [
+      'Look at UIUC courses and reddit posts about each course!',
+    ],
+  },
+];
 
 
 
@@ -37,31 +55,6 @@ const MyProfile = () => {
         }
     })}
 
-     /*
-        Inserts a user into the 'Users' collection of the database given arguments
-        id: string, name: string, email: string, password: string, courses: array of strings, favorites: array of strings
-    */
-
-        function insertUserData(id, name, email, password, courses, favorites) {
-
-          const data = `{"id":"${id}","name":"${name}","email":"${email}","password":"${password}","courses":"${courses}","favorites":"${favorites}"}`;
-  
-          axios.post("http://127.0.0.1:5000/insert/Users", data, {headers: {
-                          'Access-Control-Allow-Origin': '*',
-                          'Content-Type': 'application/json',
-          }}).catch((error) => {
-              if (error.response) {
-              console.log(error.response)
-              console.log(error.response.status)
-              console.log(error.response.headers)
-              }
-              })
-          }
-
-     
-
-
-    const profile = new Profile("bob_smith", "bob_smith@gmail.com", "Computer Science");
   return (
     <React.Fragment>
     <GlobalStyles styles={{ ul: { margin: 0, padding: 0, listStyle: 'none' } }} />
@@ -117,21 +110,18 @@ const MyProfile = () => {
                    My Information
                 </Typography>
                     {
-                        <div>
-                        <p>To get your profile details: </p><button onClick={() => getUserData('name', 'John%20Smith')}>Click me</button>
-                        {userData && <div>
-                              <p>Id: {userData.user_id}</p>
-                              <p>Name: {userData.user_name}</p>
-                              <p>Email: {userData.user_email}</p>
-                              <p>Courses: {userData.user_courses.map(app => (<li>{app}</li>))}</p>
-                              <p>Favorites: {userData.user_favorites.map(app => (<li>{app}</li>))}</p>
-                            </div>
-                        }
-                        
-                        <p>Insert User Data: </p><button onClick={() => insertUserData("1685736281929", "Bob Smith", "bobsmith@illinois.edu", "bobby", ["CS 222", "CS 225"],["CS 222"])}>Click me</button>
-                        </div>
+                      <div>
+                      {getUserData('id', '12D32423kbJKH9')} 
+                      {userData && <div>
+                            <p>Id: {userData.user_id}</p>
+                            <p>Name: {userData.user_name}</p>
+                            <p>Email: {userData.user_email}</p>
+                            <p>Courses: {userData.user_courses.map(app => (<li>{app}</li>))}</p>
+                          </div>
+                      }
+                      </div>
                     } 
-                    <button> Edit Info</button>   
+                    <Button variant='outlined' color='success'> Edit Info ⮕</Button>   
                 </Box>
                 <ul>
                 </ul>
@@ -139,7 +129,129 @@ const MyProfile = () => {
               <CardActions>
               </CardActions>
             </Card>
+          </Grid>
 
+
+
+
+
+
+
+
+
+          <Grid
+            item
+            xs={12}
+            md={4}
+          >
+            <Card>
+              <CardHeader
+                titleTypographyProps={{ align: 'center' }}
+                subheaderTypographyProps={{
+                  align: 'center',
+                }}
+                sx={{
+                  backgroundColor: (theme) =>
+                    theme.palette.mode === 'light'
+                      ? theme.palette.grey[200]
+                      : theme.palette.grey[700],
+                }}
+              />
+              <CardContent>
+                <Box
+                  sx={{
+                    display: 'dix',
+                    justifyContent: 'center',
+                    alignItems: 'baseline',
+                    mb: 2,
+                  }}
+                >
+                    <Typography
+                    component="h5"
+                    variant="h5"
+                    align="center"
+                    color="text.primary"
+                    gutterBottom
+                    >
+                   My Courses
+                </Typography>
+                    {
+                      <div>
+                      <p>To get your profile details: </p><Button variant='outlined' color='success' onClick={() => getUserData('id', id)}>Click me</Button>
+                      {userData && <div>
+                          <p>Courses: {userData.user_courses.map(app => (<li>{app}</li>))}</p>
+                          </div>
+                      }
+                      </div>
+                    }  
+                </Box>
+                <ul>
+                </ul>
+              </CardContent>
+              <CardActions>
+              </CardActions>
+            </Card>
+          </Grid>
+
+
+
+
+
+
+
+
+          <Grid
+            item
+            xs={12}
+            md={4}
+          >
+            <Card>
+              <CardHeader
+                titleTypographyProps={{ align: 'center' }}
+                subheaderTypographyProps={{
+                  align: 'center',
+                }}
+                sx={{
+                  backgroundColor: (theme) =>
+                    theme.palette.mode === 'light'
+                      ? theme.palette.grey[200]
+                      : theme.palette.grey[700],
+                }}
+              />
+              <CardContent>
+                <Box
+                  sx={{
+                    display: 'dix',
+                    justifyContent: 'center',
+                    alignItems: 'baseline',
+                    mb: 2,
+                  }}
+                >
+                    <Typography
+                    component="h5"
+                    variant="h5"
+                    align="center"
+                    color="text.primary"
+                    gutterBottom
+                    >
+                   Favorites
+                </Typography>
+                    {
+                      <div>
+                      <p>To get your profile details: </p><Button variant='outlined' color='success' onClick={() => getUserData('id', id)}>Click me</Button>
+                      {userData && <div>
+                            <p>Favorites: {userData.user_favorites.map(app => (<li>{app}</li>))}</p>
+                          </div>
+                      }
+                      </div>
+                    }  
+                </Box>
+                <ul>
+                </ul>
+              </CardContent>
+              <CardActions>
+              </CardActions>
+            </Card>
           </Grid>
       </Grid>
     </Container>

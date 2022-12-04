@@ -10,6 +10,9 @@ import MyProfile from './MyProfile';
 import FindABuddy from './FindABuddy';
 import BrowseCourses from './BrowseCourses';
 
+//@TODO: make more descriptive comments for test cases
+
+
 //myProfile test block
 describe(MyProfile, () => {
   test("should get profile information right", () => {

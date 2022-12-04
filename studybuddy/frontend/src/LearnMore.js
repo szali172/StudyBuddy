@@ -6,6 +6,7 @@ import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardHeader from '@mui/material/CardHeader';
+import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import GlobalStyles from '@mui/material/GlobalStyles';
@@ -13,29 +14,38 @@ import Container from '@mui/material/Container';
 
 const tiers = [
   {
-    title: 'Find a Friend',
+    title: 'KHUSHI',
     description: [
       'Come find a friend to study with for any class! Make a post and find other people.',
     ],
-    buttonText: 'GO TO PAGE ⮕',
+    buttonText: 'GO TO PAGE',
     buttonVariant: 'outlined',
     linkTo: '/findabuddy',
   },
   {
-    title: 'Browse',
+    title: 'VIVEN',
     description: [
       'Look at UIUC courses and reddit posts about each course!',
     ],
-    buttonText: 'GO TO PAGE ⮕',
+    buttonText: 'GO TO PAGE',
     buttonVariant: 'outlined',
     linkTo: '/browse',
   },
   {
-    title: 'Learn More',
+    title: 'DIVYA',
     description: [
       'Meet the team and learn more about the creation of Study Buddy!',
     ],
-    buttonText: 'GO TO PAGE ⮕',
+    buttonText: 'GO TO PAGE',
+    buttonVariant: 'outlined',
+    linkTo: '/LearnMore',
+  },
+  {
+    title: 'ZUHAIR',
+    description: [
+      'Meet the team and learn more about the creation of Study Buddy!',
+    ],
+    buttonText: 'GO TO PAGE',
     buttonVariant: 'outlined',
     linkTo: '/LearnMore',
   },
@@ -106,9 +116,11 @@ function Content() {
                   </ul>
                 </CardContent>
                 <CardActions>
-                <Button component={Link} to={tier.linkTo} fullWidth variant={tier.buttonVariant} color="success" justify="center">
-                {tier.buttonText} 
-                </Button>
+                <Link to={tier.linkTo}>
+                  <Button fullWidth variant={tier.buttonVariant}>
+                    {tier.buttonText}
+                  </Button>
+                  </Link>
                 </CardActions>
               </Card>
             </Grid>
@@ -124,5 +136,3 @@ const Home = () => {
 }
 
 export default Home;
-
-//themes provided by materialui

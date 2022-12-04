@@ -8,9 +8,13 @@ import CardHeader from '@mui/material/CardHeader';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import Button from '@mui/material/Button';
   
 const BrowseCourses = () => {
     const [classData, setClassData] = useState(null)
+    const courses = []
+    const [GPA, setGPA] = useState(null)
+    const [redditData, setRedditData] = useState(null)
 
     function getClassData(key, value) {
         axios({
@@ -51,6 +55,50 @@ const BrowseCourses = () => {
             console.log(error.response.headers)
             }
         })}
+
+
+      function getGPA(title) {
+        var key = "Course%20Title"
+        axios({
+          method: "GET",
+          url:"http://127.0.0.1:5000/get/classes/"+key+"="+title,
+        })
+        .then((response) => {
+          const res =response.data
+          console.log(res)
+          var total = (parseInt(res["A+"])* 4) + (parseInt(res["A"]) * 4) + (parseInt(res["A-"]) * 3.67) + (parseInt(res["B+"]) * 3.33) + (parseInt(res["B"]) * 3) + (parseInt(res["B-"]) * 2.67) + (parseInt(res["C+"]) * 2.33) + (parseInt(res["C"]) * 2) + (parseInt(res["C-"]) * 1.67) + (parseInt(res["D+"]) * 1.33) + (parseInt(res["D"] * 1)) + (parseInt(res["D-"]) * 0.67)
+          var gpa = (total / (parseInt(res["A+"]) + parseInt(res["A"]) + parseInt(res["A-"]) + parseInt(res["B+"]) + parseInt(res["B"]) + parseInt(res["B-"]) + parseInt(res["C+"]) + parseInt(res["C"]) + parseInt(res["C-"]) + parseInt(res["D+"]) + parseInt(res["D"]) + parseInt(res["D-"]) + parseInt(res["F"]))).toFixed(2)
+          setGPA(({
+            "gpa": gpa
+          }))
+        }).catch((error) => {
+          if (error.response) {
+            console.log(error.response)
+            console.log(error.response.status)
+            console.log(error.response.headers)
+            }
+        })}
+
+        function getRedditPost(sub, topic) {
+          axios({
+            method: "GET",
+            url:"http://127.0.0.1:5000//reddit_posts/"+sub+"/"+topic
+          })
+          .then((response) => {
+            const res =response.data
+            console.log(res)
+            console.log(typeof res)
+            // console.log(res[0])
+            setRedditData(({
+              first: res[0]
+            }))
+          }).catch((error) => {
+            if (error.response) {
+              console.log(error.response)
+              console.log(error.response.status)
+              console.log(error.response.headers)
+              }
+          })}
 
         
 
@@ -104,17 +152,34 @@ const BrowseCourses = () => {
                     >
                    COURSES
                 </Typography>
-                    {
-                       
-                    } 
-                     <p>To get class details: </p><button onClick={() => getClassData('Primary%20Instructor', 'Zheng,%20Reanne')}>Click me</button>
+                {getClassData('Primary%20Instructor', 'Zheng,%20Reanne')}
                     {classData && <div>
-                        <p>Year: {classData.year}</p>
                         <p>Course Name: {classData.course_title}</p>
+                        <p>Year: {classData.year}</p>
                         <p>Number of A+: {classData.a_plus}</p>
-                        <p>Primary Instructor: {classData.primary_instructor}</p>
-                        </div>
+                        <p>Primary Instructor: {classData.primary_instructor}</p>                        
+                        {console.log(getGPA("Intro%20Asian%20American%20Studies"))}
+                        {GPA && <div>
+                            {/* <p>GPA: {GPA.gpa}</p> */}
+                            {/* {courses.push({year: classData.year, name: classData.course_title, numbeofaplus: classData.a_plus, primaryinst: classData.primary_instructor, gpa: GPA.gpa})} */}
+                          </div>
+                        } 
+                        {getRedditPost('UIUC', 'Intro Asian American Studies')}
+                        {redditData && <div>
+                              <h4>Reddit Post for this course: </h4>
+                              <p>Author: {redditData.first['author']}</p>
+                              <p>Date: {redditData.first['date']}</p>
+                              <p>Title: {redditData.first['title']}</p>
+                              <p>Link to Post: {redditData.first['permalink']}</p>
+                            </div>
+                        }
+                      </div>
                     }
+                  <Card>
+                  {/* <div>
+                  {courses.map(paragraph => <p>{paragraph}</p>)}
+                  </div> */}
+                  </Card>
                 </Box>
                 <ul>
                 </ul>

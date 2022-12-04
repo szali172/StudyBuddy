@@ -8,6 +8,8 @@ import CardHeader from '@mui/material/CardHeader';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import Button from '@mui/material/Button';
+import {id} from './Login';
 
 const FindABuddy = () => {
     const [postData, setPostData] = useState(null)
@@ -71,9 +73,6 @@ const FindABuddy = () => {
     const DescriptionHandleChange = e => {
         setDescription(e.target.value)
     }
-    const post = new Post("Bob", "Illini Union", "CS222");
-    const buddyButton = new FindABuddyClass();
-    // buddyButton.makePost("CS225" , "UMH" , "WHEE");
   return (
     <div>
         <style>{'body { background-color: #6ba0cf; }'}</style>
@@ -92,7 +91,7 @@ const FindABuddy = () => {
           <Grid
             item
             xs={12}
-            md={12}
+            md={6}
           >
             <Card>
               <CardHeader
@@ -167,16 +166,68 @@ const FindABuddy = () => {
 
                         <br></br>
                         <br></br>
-        
-                        <h5>Name: {postname}</h5>
-                        <h5>Location: {location}</h5>
-                        <h5>Description: {description}</h5>
-                        <button onClick={() => insertPostData("4567898765638", "1685736281929", "2022-11-6 21:42:26.423489" , location.toString(), description.toString())}>MAKE POST</button>
 
-                                
+                        <Button variant='outlined' color='success' onClick={() => insertPostData("4567898765638",id, "2022-11-6 21:42:26.423489" , location.toString(), description.toString())}>MAKE POST</Button>
+                  
                     </form>
                     } 
-                      <p>To get Post details: </p><button onClick={() => getPostData('post_id', '4567898765638')}>Click me</button>
+                      <p>To get Post details: </p><Button variant='outlined' color='success' onClick={() => getPostData('op_id', id)}>Click me</Button>
+                        {postData && <div>
+                            <p>Time: {postData.ts}</p>
+                            <p>Location: {postData.location}</p>
+                            <p>Content: {postData.content}</p>
+                            </div>
+                        }
+
+                     
+                </Box>
+                <ul>
+                </ul>
+              </CardContent>
+              <CardActions>
+              </CardActions>
+            </Card>
+
+          </Grid>
+
+
+          <Grid
+            item
+            xs={12}
+            md={6}
+          >
+            <Card>
+              <CardHeader
+                titleTypographyProps={{ align: 'center' }}
+                subheaderTypographyProps={{
+                  align: 'center',
+                }}
+                sx={{
+                  backgroundColor: (theme) =>
+                    theme.palette.mode === 'light'
+                      ? theme.palette.grey[200]
+                      : theme.palette.grey[700],
+                }}
+              />
+              <CardContent>
+                <Box
+                  sx={{
+                    display: 'dix',
+                    justifyContent: 'center',
+                    alignItems: 'baseline',
+                    mb: 2,
+                  }}
+                >
+                    <Typography
+                    component="h5"
+                    variant="h5"
+                    align="center"
+                    color="text.primary"
+                    gutterBottom
+                    >
+                   VIEW POSTS
+                </Typography>
+                      <p>To get Post details: </p><Button variant='outlined' color='success' onClick={() => getPostData('op_id', id)}>Click me</Button>
                         {postData && <div>
                             <p>Time: {postData.ts}</p>
                             <p>Location: {postData.location}</p>
@@ -192,9 +243,7 @@ const FindABuddy = () => {
             </Card>
 
           </Grid>
-      </Grid>
-
-      
+      </Grid>   
       </Container>
     </div>
   )
