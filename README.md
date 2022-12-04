@@ -2,7 +2,13 @@
 # CS 222 Group 92
 
 ## Authors:
-### Divya Sundar (dsundar2), Khushi Maheshwari (khushim2), Viven Puthenpurayil (vivencp2), Zuhair Ali (sali200)
+Divya Sundar (dsundar2)
+
+Khushi Maheshwari (khushim2)
+
+Viven Puthenpurayil (vivencp2)
+
+Zuhair Ali (sali200)
 
 &nbsp;
 ## **Description**
@@ -18,7 +24,9 @@
 
 ### After cloning the repository and entering the directory for the project install the node modules by doing
 
-``` npm install ```
+``` 
+npm install 
+```
 
 ### To start the website locally execute these commands in a terminal window
 
@@ -28,7 +36,7 @@ cd frontend
 npm start
 ```
 
-### To start the backend execute these commands in a new terminal
+### To start the backend execute these commands in a new terminal window
 ```
 cd studybuddy
 cd backend
