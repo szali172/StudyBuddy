@@ -11,6 +11,13 @@ function App() {
   const [GPA, setGPA] = useState(null)
 
   /*
+  Sleep function to allow for us to wait for the database call
+  */
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }  
+
+  /*
   Retrieve user data given a key (i.e. name, email, id) and a value ("John Smith", "jsmith@illinois.edu", "12sd31S2P0")
 
   Stores the information in the userData variable
@@ -76,6 +83,11 @@ function App() {
         w: res["W"],
         primary_instructor: res["Primary Instructor"]
       }))
+      var total = (parseInt(classData.a_plus)* 4) + (parseInt(classData.a) * 4) + (parseInt(classData.a_minus) * 3.67) + (parseInt(classData.b_plus) * 3.33) + (parseInt(classData.b) * 3) + (parseInt(classData.b_minus) * 2.67) + (parseInt(classData.c_plus) * 2.33) + (parseInt(classData.c) * 2) + (parseInt(classData.c_minus) * 1.67) + (parseInt(classData.d_plus) * 1.33) + (parseInt(classData.d * 1)) + (parseInt(classData.d_minus) * 0.67)
+      var gpa = (total / (parseInt(classData.a_plus) + parseInt(classData.a) + parseInt(classData.a_minus) + parseInt(classData.b_plus) + parseInt(classData.b) + parseInt(classData.b_minus) + parseInt(classData.c_plus) + parseInt(classData.c) + parseInt(classData.c_minus) + parseInt(classData.d_plus) + parseInt(classData.d) + parseInt(classData.d_minus) + parseInt(classData.f))).toFixed(2)
+      setGPA(({
+        "gpa": gpa,
+      }))
     }).catch((error) => {
       if (error.response) {
         console.log(error.response)
@@ -92,13 +104,26 @@ function App() {
     */
 
     function getGPA(title) {
-      getClassData("Course%20Title", title);
-      var total = (parseInt(classData.a_plus)* 4) + (parseInt(classData.a) * 4) + (parseInt(classData.a_minus) * 3.67) + (parseInt(classData.b_plus) * 3.33) + (parseInt(classData.b) * 3) + (parseInt(classData.b_minus) * 2.67) + (parseInt(classData.c_plus) * 2.33) + (parseInt(classData.c) * 2) + (parseInt(classData.c_minus) * 1.67) + (parseInt(classData.d_plus) * 1.33) + (parseInt(classData.d * 1)) + (parseInt(classData.d_minus) * 0.67)
-      var gpa = (total / (parseInt(classData.a_plus) + parseInt(classData.a) + parseInt(classData.a_minus) + parseInt(classData.b_plus) + parseInt(classData.b) + parseInt(classData.b_minus) + parseInt(classData.c_plus) + parseInt(classData.c) + parseInt(classData.c_minus) + parseInt(classData.d_plus) + parseInt(classData.d) + parseInt(classData.d_minus) + parseInt(classData.f))).toFixed(2)
-      setGPA(({
-        "gpa": gpa,
-      }))
-    }
+      var key = "Course%20Title"
+      axios({
+        method: "GET",
+        url:"http://127.0.0.1:5000/get/classes/"+key+"="+title,
+      })
+      .then((response) => {
+        const res =response.data
+        console.log(res)
+        var total = (parseInt(res["A+"])* 4) + (parseInt(res["A"]) * 4) + (parseInt(res["A-"]) * 3.67) + (parseInt(res["B+"]) * 3.33) + (parseInt(res["B"]) * 3) + (parseInt(res["B-"]) * 2.67) + (parseInt(res["C+"]) * 2.33) + (parseInt(res["C"]) * 2) + (parseInt(res["C-"]) * 1.67) + (parseInt(res["D+"]) * 1.33) + (parseInt(res["D"] * 1)) + (parseInt(res["D-"]) * 0.67)
+        var gpa = (total / (parseInt(res["A+"]) + parseInt(res["A"]) + parseInt(res["A-"]) + parseInt(res["B+"]) + parseInt(res["B"]) + parseInt(res["B-"]) + parseInt(res["C+"]) + parseInt(res["C"]) + parseInt(res["C-"]) + parseInt(res["D+"]) + parseInt(res["D"]) + parseInt(res["D-"]) + parseInt(res["F"]))).toFixed(2)
+        setGPA(({
+          "gpa": gpa
+        }))
+      }).catch((error) => {
+        if (error.response) {
+          console.log(error.response)
+          console.log(error.response.status)
+          console.log(error.response.headers)
+          }
+      })}
 
   /*
   Retrieve post data given a key (i.e. post id, Location, time) and a value ("h6Gw4320PMkq1e", "Grainger Library 4th Floor", "2022-10-12 16:39:39.596758")
