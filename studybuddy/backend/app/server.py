@@ -21,7 +21,7 @@ from utils.heap_queue import HeapQueue
 HOST = 'http://localhost'
 PORT = '5000'
 processes = []
-global hq
+hq = HeapQueue(HOST, PORT)
 
 
 ### Routes
@@ -116,7 +116,6 @@ if __name__ == '__main__':
     # Add subprocesses to list of running daemon tasks
     # processes.append(queue_proc)
         
-    hq = HeapQueue(HOST, PORT)
     print("Opening posts queue...")
     # queue_thread = threading.Thread(target=maintain_queue, args=(hq))
     queue_thread = multiprocessing.Process(target=(lambda:maintain_queue(hq)))
