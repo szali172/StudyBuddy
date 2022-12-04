@@ -17,7 +17,7 @@
     "start": "react-scripts start",
     "start-backend": "cd ../backend && flask run --no-debugger",
     "build": "react-scripts build",
-    "test": "jest",
+    "test": "react-scripts test --transformIgnorePatterns \"node_modules/(?!axios)/\"",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
