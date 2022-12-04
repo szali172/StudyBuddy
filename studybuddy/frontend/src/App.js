@@ -184,7 +184,7 @@ function App() {
 
     function insertPostData(post_id, op_id, location, content, comments) {
       var ts = Date(Date.now()).toString()
-      const data = `{"post_id":"${post_id}","op_id":"${op_id}","ts":"${ts}","location":"${location}","content":"${content}","comments":"${comments}"}`;
+      const data = `{"post_id":"${post_id}","op_id":"${op_id}","ts":"${ts}","location":"${location}","content":"${content}","comments":[]}`;
      
       axios.post("http://127.0.0.1:5000/insert/Posts", data, {headers: {
                     'Access-Control-Allow-Origin': '*',
@@ -307,13 +307,13 @@ function App() {
 
         <p>Insert User Data: </p><button onClick={() => insertUserData("1685736281929", "Bob Smith", "bobsmith@illinois.edu", "bobby", ["CS 222", "CS 225"],["CS 222"])}>Click me</button>
 
-        <p>Insert Post Data: </p><button onClick={() => insertPostData("4567898765639", "1685736281929", "2022-11-6 21:42:26.423489" , "Siebel CS", "Someone want to study for CS 361 with me?", [{"user_id":"12D32423kbJK11","ts":"2022-10-12 16:49:39.596765","content":"Yeah I'm down! What time?"},{"user_id":"9as7dfh23hkjWs","ts":"2022-10-12 16:54:39.596771","content":"Same here. Did you figure out how to do #4? I'm free to meet up at 7pm!"},{"user_id":"12D32423kbJKH9","ts":"2022-10-12 16:56:39.596775","content":"I did figure that one out! 7pm works with me if you guys are all free"}])}>Click me</button>
+        <p>Insert Post Data: </p><button onClick={() => insertPostData("4567898765639", "1685736281929", "Siebel CS", "Someone want to study for CS 361 with me?", [{"user_id":"12D32423kbJK11","ts":"2022-10-12 16:49:39.596765","content":"Yeah I'm down! What time?"},{"user_id":"9as7dfh23hkjWs","ts":"2022-10-12 16:54:39.596771","content":"Same here. Did you figure out how to do #4? I'm free to meet up at 7pm!"},{"user_id":"12D32423kbJKH9","ts":"2022-10-12 16:56:39.596775","content":"I did figure that one out! 7pm works with me if you guys are all free"}])}>Click me</button>
 
         <p>Delete user</p><button onClick={() => deleteUser("1685736281929")}>Delete User</button>
 
         <p>Delete Post</p><button onClick={() => deletePost("4567898765638")}>Delete Post</button>
 
-        <p>Insert Comment</p><button onClick={() => insertCommentToPost("h6Gw4320PMkq1e", "1685736281929", "Lets study for 233!" )}>Insert Comment</button>
+        <p>Insert Comment</p><button onClick={() => insertCommentToPost("4567898765639", "1685736281929", "Lets study for 233!" )}>Insert Comment</button>
 
         <p>Get GPA</p><button onClick={() => console.log(getGPA("Atg%20Institutions%20and%20Reg"))}>Get GPA</button>
         {GPA && <div>
