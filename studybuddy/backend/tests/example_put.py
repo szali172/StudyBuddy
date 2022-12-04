@@ -12,10 +12,12 @@ PORT = '5000'
 # resp = requests.post('http://localhost:5000/insert/Posts', json=json.dumps(post_example), headers={"Content-Type": "application/json"})
 # print(resp.text, ", ", resp.status_code)
 
-
 # comment_example = {"user_id": "7dhnc7hb2lKH9", "ts": "Wed Nov 30 2022 18:29:31 GMT-0600 (Central Standard Time)", "content": "third^^"}
 # resp = requests.put('http://localhost:5000/insert_comment/post_id=23jdidubd7cb2x', json=json.dumps(comment_example), headers={"Content-Type": "application/json"})
 # print(resp.text, ", ", resp.status_code)
 
-resp = requests.delete(f'{HOST}:{PORT}/delete/Posts/id=23jdidubd7cb2x')
+# resp = requests.delete(f'{HOST}:{PORT}/delete/Posts/id=23jdidubd7cb2x')
+# print(resp.text, resp.status_code)
+
+resp = requests.get(f'{HOST}:{PORT}/get_all/Posts')
 print(resp.text, resp.status_code)

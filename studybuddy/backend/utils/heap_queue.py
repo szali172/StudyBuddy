@@ -16,6 +16,7 @@ class HeapQueue():
         self.HOST = HOST
         self.PORT = PORT
     
+    
     def reset_queue(self):
         """
         Read all posts into a list. Use heapify() to convert list to heap in linear time
@@ -23,6 +24,7 @@ class HeapQueue():
         resp = requests.get(f'{self.HOST}:{self.PORT}/get_all_posts')
         posts = resp.json()
         self.queue = heapq.heapify(posts) # linear time
+      
         
     def insert(self, timestamp, id):
         """
@@ -30,20 +32,40 @@ class HeapQueue():
         """
         heapq.heappush(self.queue, (timestamp, id))
     
+    
     def remove(self, id):
         """
         Called whenever a post is manually deleted
         """
         try:
-            self.queue.remove(id)
-        except:
-            pass
+            post = self.find(id)
+            self.queue.remove(post)
+        except Exception as e:
+            print(e)
+        
+    def find(self, id):
+        """
+        Finds a specific tuple with matching id
+        """
+        for item in self.queue:
+            if item[1] == id:
+                return item
+
+        # Could not find id
+        raise ValueError(f'post with id: {id}, does not exist in heap_queue')
+        
         
     def is_empty(self):
         """
         Return true if empty
         """
         return len(self.queue) == 0
+
+    def __len__(self):
+        return len(self.queue)
+    
+    def __getitem__(self, key):
+        return self.queue[key]
         
         
     
@@ -82,7 +104,7 @@ def maintain_queue(hq):
             # Send a request to delete post from db
             if hq.queue[0][0] >= three_days:
                 heapq.heappop(hq.queue)
-                requests.get(f'{HOST}:{PORT}/delete/Posts/id={hq[0][1]}')
+                requests.get(f'{hq.HOST}:{hq.PORT}/delete/Posts/id={hq[0][1]}')
             
              
 if __name__ == '__main__':

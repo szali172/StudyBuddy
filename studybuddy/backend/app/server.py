@@ -1,6 +1,6 @@
 ### Imports
 from flask import Flask, request
-import threading, atexit, signal, sys, datetime, time, requests, heapq
+import threading, multiprocessing, atexit, signal, sys, datetime, time, requests, heapq
 
 # App
 Server = Flask(__name__)
@@ -21,7 +21,6 @@ from utils.heap_queue import HeapQueue
 HOST = 'http://localhost'
 PORT = '5000'
 processes = []
-heap_queue = HeapQueue(HOST, PORT)
 
 
 ### Routes
@@ -60,20 +59,26 @@ def shutdown(token):
 
 
 
-def maintain_queue(hq):    
-    # Loop forever until server closes
-    while not hq.server_closed:
+def maintain_queue(hq: HeapQueue):
+    """
+    Runs forever until server is closed
+    """
+    while True:
         
         # Sleep for one hour
         time.sleep(60 * 60 * 60)
         
         # Reevaluate after waking up
-        if hq.server_closed == True:
+        if hq.server_closed == True:       # TODO: Remove this if threading is the final
             break
         
         # If empty, sanity check and reset queue
         if hq.is_empty():
-            hq.reset_queue()    
+            hq.reset_queue()
+            
+            # If collection is just empty, go back to sleep, get some coffee, check again later
+            if hq.is_empty():
+                continue
         
         three_days = datetime.datetime.now() - datetime.timedelta(days=3)
         print(three_days)
@@ -83,9 +88,11 @@ def maintain_queue(hq):
         
             # Pop front of queue if time is longer than three days
             # Send a request to delete post from db
-            if hq.queue[0][0] >= three_days:
+            if hq[0][0] >= three_days:
                 heapq.heappop(hq.queue)
                 requests.get(f'{HOST}:{PORT}/delete/Posts/id={hq[0][1]}/stale_post={True}')
+            else:
+                break
 
 
 
@@ -93,7 +100,8 @@ if __name__ == '__main__':
     
     # Start server
     print('Server starting...')
-    server_thread = threading.Thread(target=start_server)
+    # server_thread = threading.Thread(target=start_server)
+    server_thread = multiprocessing.Process(target=start_server)
     server_thread.start()
     print('Server started!')
     
@@ -107,11 +115,12 @@ if __name__ == '__main__':
     # Add subprocesses to list of running daemon tasks
     # processes.append(queue_proc)
         
-    # q = heap_queue.initialize()
-    # print("Opening posts queue...")
-    # queue_thread = threading.Thread(target=maintain_queue(heap_queue))
-    # queue_thread.start()
-    # print("Queue open!")
+    hq = HeapQueue(HOST, PORT)
+    print("Opening posts queue...")
+    # queue_thread = threading.Thread(target=maintain_queue, args=(hq))
+    queue_thread = multiprocessing.Process(target=(lambda:maintain_queue(hq)))
+    queue_thread.start()
+    print("Queue open!")
     
     # Ctrl+C signals server shutdown
     signal.signal(signal.SIGINT, shutdown_server)

@@ -22,8 +22,8 @@ database = cluster["buddies"]
 @StuddyBuddy.route('/get/<coll>/<key>=<value>', methods=['GET'])
 def get(coll, key, value):
     """
-    Retrieve a document from either the 'Posts' or 'Users' collection 
-        given a key (i.e. name, email, id) and a value ("John Smith", "jsmith@illinois.edu", "12sd31S2P0")
+    Retrieve a document from either the 'Posts', 'Users' or 'classes' collection
+        given a key (i.e. name, email, id) and a value ("John Smith", "jsmith@illinois.edu", "12sd31S2P0")\n
         
     Returns a json object containing all fields of the DB entry
     """
@@ -45,24 +45,41 @@ def get(coll, key, value):
     
     
     
-@StuddyBuddy.route('/get_all_posts', methods=['GET'])
-def get_all_posts():
+@StuddyBuddy.route('/get_all/<coll>', defaults={'heapq': False}, methods=['GET'])
+@StuddyBuddy.route('/get_all/<coll>/heapq=<heapq>', methods=['GET'])
+def get_all(coll, heapq):
     """
-    Called when the heapq must be reset. Returns every document in Posts collection as a JSON array of tuples
+    Retrieve every document from collection, either 'Posts', 'Users', 'classes'\n
+    AlsoCalled when the heapq must be reset. Returns every document in Posts collection as a JSON array of tuples
     """
+    # Check to see if collection exists
+    try:
+        collection = database[coll] # either users or posts
+    except:
+        return f'Could not access {coll}\n', 400
+    
     # Gather all documents from collection
-    cursor = database.Posts.find({})
-    posts = []
+    cursor = collection.find({})
+    entries = []
     
     # Collection is empty
-    if cursor.count() == 0:
-        return print("Posts collection is empty"), 204 # No Content
+    if cursor:
+        # Create a tuple for every post and add it to list
+        for document in cursor:
+            
+            if coll == 'Posts':
+                # Incoming call from heapq
+                if heapq:
+                    entries.append((document['ts'], document['post_id']))
+                    continue
+                
+            entries.append(document)
+            
+        return json.dumps(entries, default=str), 200
     
-    # Create a tuple for every post and add it to list
-    for document in cursor:
-        posts.append((document['ts'], document['post_id']))
-    
-    return jsonify(posts), 200
+    else:
+        return print("collection is empty"), 204 # No Content
+
     
     
 @StuddyBuddy.route('/delete/<coll>/id=<value>', defaults={'stale_post': False})
