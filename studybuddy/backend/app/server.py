@@ -1,5 +1,6 @@
 ### Imports
 from flask import Flask, request
+from flask_cors import CORS
 import threading, atexit, signal, sys
 
 # Utilities
@@ -14,6 +15,7 @@ from studdy_buddy import studdy_buddy
 server = Flask(__name__)
 server.register_blueprint(reddit)
 server.register_blueprint(studdy_buddy)
+CORS(server)
 
 
 ### Routes

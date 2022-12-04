@@ -1,5 +1,6 @@
 ### Imports
 from flask import Blueprint
+from flask_cors import CORS
 import datetime, json, sys
 
 # Utilities
@@ -9,6 +10,7 @@ import utils.validate_entry as validate_entry
 
 
 reddit = Blueprint('reddit_blueprint', __name__)
+CORS(reddit)
 
 
 """ Connect to Reddit API """

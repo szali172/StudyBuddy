@@ -9,6 +9,7 @@ function App() {
   const [classData, setClassData] = useState(null)
   const [postData, setPostData] = useState(null)
   const [GPA, setGPA] = useState(null)
+  const [redditData, setRedditData] = useState(null)
 
   /*
   Retrieve user data given a key (i.e. name, email, id) and a value ("John Smith", "jsmith@illinois.edu", "12sd31S2P0")
@@ -139,6 +140,7 @@ function App() {
         console.log(error.response)
         console.log(error.response.status)
         console.log(error.response.headers)
+        console.log(error.response.response)
         }
     })}
 
@@ -238,6 +240,28 @@ function App() {
       })
     }
 
+
+    function getRedditPost(sub, topic) {
+      axios({
+        method: "GET",
+        url:"http://127.0.0.1:5000//reddit_posts/"+sub+"/"+topic
+      })
+      .then((response) => {
+        const res =response.data
+        console.log(res)
+        console.log(typeof res)
+        // console.log(res[0])
+        setRedditData(({
+          first: res[0]
+        }))
+      }).catch((error) => {
+        if (error.response) {
+          console.log(error.response)
+          console.log(error.response.status)
+          console.log(error.response.headers)
+          }
+      })}
+
   return (
     <div className="App">
       <header className="App-header">
@@ -282,6 +306,14 @@ function App() {
         <p>Get GPA</p><button onClick={() => console.log(getGPA("Atg%20Institutions%20and%20Reg"))}>Get GPA</button>
         {GPA && <div>
               <p>GPA: {GPA.gpa}</p>
+            </div>
+        }
+
+        <p>To get Reddit details: </p><button onClick={() => getRedditPost('UIUC', 'ticket')}>Click me</button>
+        {redditData && <div>
+              <p>Author: {redditData.first['author']}</p>
+              <p>Date: {redditData.first['date']}</p>
+              <p>Title: {redditData.first['title']}</p>
             </div>
         }
 
