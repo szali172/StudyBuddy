@@ -8,24 +8,21 @@ sys.path.append('../')
 import utils.credentials as c
 import utils.validate_entry as validate_entry
 
-
-reddit = Blueprint('reddit_blueprint', __name__)
-CORS(reddit)
-
+Reddit = Blueprint('reddit', __name__)
+CORS(Reddit)
 
 """ Connect to Reddit API """
 import praw
-r = praw.Reddit(client_id=c.praw_client_id, client_secret=c.praw_client_secret, user_agent=c.praw_user_agent)
+reddit = praw.Reddit(client_id=c.praw_client_id, client_secret=c.praw_client_secret, user_agent=c.praw_user_agent)
     
     
 ### Routes
-@reddit.route('/reddit_posts/<sub>/<topic>', methods=['GET'])
+@Reddit.route('/reddit_posts/<sub>/<topic>', methods=['GET'])
 def get_reddit_posts(sub, topic):
     """
     Retrieve the top posts given a subreddit and search topic
     """    
-    
-    subreddit = r.subreddit(sub)
+    subreddit = reddit.subreddit(sub)
     
     posts = []
     for i, post in enumerate(subreddit.search(topic, limit=10)):
@@ -42,12 +39,3 @@ def get_reddit_posts(sub, topic):
         posts.append(post_properties)
                 
     return json.dumps(posts, default=str), 200
-
-
-
-def connect_to_reddit():
-    """
-    Connect to Reddit API
-    """
-    import praw
-    r = praw.Reddit(client_id=c.praw_client_id, client_secret=c.praw_client_secret, user_agent=c.praw_user_agent)
