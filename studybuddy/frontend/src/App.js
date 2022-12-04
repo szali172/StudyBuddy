@@ -98,6 +98,30 @@ function App() {
     })}
 
 
+    function getAll(col) {
+      axios({
+        method: "GET",
+        url:"http://127.0.0.1:5000/get_all/"+col,
+      })
+      .then((response) => {
+        const res =response.data
+        console.log(res)
+        // setUserData(({
+        //   user_id: res["id"],
+        //   user_name: res["name"],
+        //   user_email: res["email"],
+        //   user_courses: res["courses"],
+        //   user_favorites: res["favorites"]
+        // }))
+      }).catch((error) => {
+        if (error.response) {
+          console.log(error.response)
+          console.log(error.response.status)
+          console.log(error.response.headers)
+          }
+      })}
+
+
       /*
     Retrieve course average GPA given the course name
     
@@ -328,6 +352,9 @@ function App() {
               <p>Title: {redditData.first['title']}</p>
             </div>
         }
+
+      <p>Check get all</p><button onClick={() => getAll("classes")}>Get all</button>
+
 
       </header>
     </div>
