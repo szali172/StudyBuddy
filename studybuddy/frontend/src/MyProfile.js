@@ -11,25 +11,6 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import GlobalStyles from '@mui/material/GlobalStyles';
 import Container from '@mui/material/Container';
-import {id} from './Login';
-
-
-const tiers = [
-  {
-    title: 'My Information',
-    description: [
-      'Come find a friend to study with for any class! Make a post and find other people.',
-    ],
-  },
-  {
-    title: 'My Favorites',
-    description: [
-      'Look at UIUC courses and reddit posts about each course!',
-    ],
-  },
-];
-
-
 
 const MyProfile = () => {
   const [userData, setUserData] = useState(null)
@@ -235,90 +216,4 @@ const MyProfile = () => {
   </React.Fragment>
   )
 }
-  
 export default MyProfile;
-
-
-class Profile
-{
-    #username = null;
-    #email = null;
-    #major = null;
-    #favorites = null;
-    #added = null;
-
-    constructor(n, l, m)
-    {
-        this.#username = n;
-        this.#email = l;
-        this.#major = m;
-    }
-
-    setUsername(name) {
-        this.#username = name;
-    }
-    setEmail(email) {
-        this.#email = email;
-    }
-    setMajor(major) {
-        this.#major = major;
-    }
-    getName() {
-        return this.#username;
-    }
-    getEmail(){
-        return this.#email;
-    }
-    getMajor(){
-        return this.#major;
-    }
-    makeFavorite(c){
-        this.#favorites.push(c);
-    }
-    removeFavorite(c) {
-        this.#favorites.remove(c);
-    }
-}
-
-
-class Course
-{
-    #name = null;
-    #avgGpa = 0.0;
-    #redditPosts = null;
-    #favorite = false;
-    #added = false;
-    setName(n)
-    {
-        this.#name = n;
-    }
-    getName()
-    {
-        return this.#name;
-    }
-    setGPA(gpa)
-    {
-        this.#avgGpa = gpa;
-    }
-    getGPA()
-    {
-        return this.#avgGpa;
-    }
-    getRedditPost()
-    {
-        return this.#redditPosts;
-    }
-    setFavorite(fav)
-    {
-        this.#favorite = fav;
-    }
-    isFavorite()
-    {
-        return this.#favorite;
-    }
-    isAdded()
-    {
-        return this.#added;
-    }
-}
-

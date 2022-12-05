@@ -10,43 +10,43 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
   
 const BrowseCourses = () => {
-  
-    const [classData, setClassData] = useState(null)
     const [GPA, setGPA] = useState(null)
     const [redditData, setRedditData] = useState(null)
     const [all, setAll] = useState(null)
+    function getGPA(title) {
+      var key = "Course%20Title"
+      axios({
+        method: "GET",
+        url:"http://127.0.0.1:5000/get/classes/"+key+"="+title,
+      })
+      .then((response) => {
+        const res =response.data
+        console.log(res)
+        var total = (parseInt(res["A+"])* 4) + (parseInt(res["A"]) * 4) + (parseInt(res["A-"]) * 3.67) + (parseInt(res["B+"]) * 3.33) + (parseInt(res["B"]) * 3) + (parseInt(res["B-"]) * 2.67) + (parseInt(res["C+"]) * 2.33) + (parseInt(res["C"]) * 2) + (parseInt(res["C-"]) * 1.67) + (parseInt(res["D+"]) * 1.33) + (parseInt(res["D"] * 1)) + (parseInt(res["D-"]) * 0.67)
+        var gpa = (total / (parseInt(res["A+"]) + parseInt(res["A"]) + parseInt(res["A-"]) + parseInt(res["B+"]) + parseInt(res["B"]) + parseInt(res["B-"]) + parseInt(res["C+"]) + parseInt(res["C"]) + parseInt(res["C-"]) + parseInt(res["D+"]) + parseInt(res["D"]) + parseInt(res["D-"]) + parseInt(res["F"]))).toFixed(2)
+        setGPA(({
+          "gpa": gpa
+        }))
+      }).catch((error) => {
+        if (error.response) {
+          console.log(error.response)
+          console.log(error.response.status)
+          console.log(error.response.headers)
+          }
+      })}
 
-    function getClassData(key, value) {
+      function getRedditPost(sub, topic) {
         axios({
           method: "GET",
-          url:"http://127.0.0.1:5000/get/classes/"+key+"="+value,
+          url:"http://127.0.0.1:5000//reddit_posts/"+sub+"/"+topic
         })
         .then((response) => {
           const res =response.data
           console.log(res)
-          setClassData(({
-            year: res["Year"],
-            tearm: res["Term"],
-            year_term: res["YearTerm"],
-            subject: res["Subject"],
-            number: res["Number"],
-            course_title: res["Course Title"],
-            sched_type: res["Sched Type"],
-            a_plus: res["A+"],
-            a: res["A"],
-            a_minus: res["A-"],
-            b_plus: res["B+"],
-            b: res["B"],
-            b_minus: res["B-"],
-            c_plus: res["C+"],
-            c: res["C"],
-            c_minus: res["C-"],
-            d_plus: res["D+"],
-            d: res["D"],
-            d_minus: res["D-"],
-            f: res["F"],
-            w: res["W"],
-            primary_instructor: res["Primary Instructor"]
+          console.log(typeof res)
+          // console.log(res[0])
+          setRedditData(({
+            first: res[0]
           }))
         }).catch((error) => {
           if (error.response) {
@@ -56,41 +56,18 @@ const BrowseCourses = () => {
             }
         })}
 
-
-      function getGPA(title) {
-        var key = "Course%20Title"
-        axios({
-          method: "GET",
-          url:"http://127.0.0.1:5000/get/classes/"+key+"="+title,
-        })
-        .then((response) => {
-          const res =response.data
-          console.log(res)
-          var total = (parseInt(res["A+"])* 4) + (parseInt(res["A"]) * 4) + (parseInt(res["A-"]) * 3.67) + (parseInt(res["B+"]) * 3.33) + (parseInt(res["B"]) * 3) + (parseInt(res["B-"]) * 2.67) + (parseInt(res["C+"]) * 2.33) + (parseInt(res["C"]) * 2) + (parseInt(res["C-"]) * 1.67) + (parseInt(res["D+"]) * 1.33) + (parseInt(res["D"] * 1)) + (parseInt(res["D-"]) * 0.67)
-          var gpa = (total / (parseInt(res["A+"]) + parseInt(res["A"]) + parseInt(res["A-"]) + parseInt(res["B+"]) + parseInt(res["B"]) + parseInt(res["B-"]) + parseInt(res["C+"]) + parseInt(res["C"]) + parseInt(res["C-"]) + parseInt(res["D+"]) + parseInt(res["D"]) + parseInt(res["D-"]) + parseInt(res["F"]))).toFixed(2)
-          setGPA(({
-            "gpa": gpa
-          }))
-        }).catch((error) => {
-          if (error.response) {
-            console.log(error.response)
-            console.log(error.response.status)
-            console.log(error.response.headers)
-            }
-        })}
-
-        function getRedditPost(sub, topic) {
+        function getAll(col) {
           axios({
             method: "GET",
-            url:"http://127.0.0.1:5000//reddit_posts/"+sub+"/"+topic
+            url:"http://127.0.0.1:5000/get_all/"+col,
           })
           .then((response) => {
-            const res =response.data
+            console.log("hi")
+            const res = response.data
             console.log(res)
-            console.log(typeof res)
-            // console.log(res[0])
-            setRedditData(({
-              first: res[0]
+            console.log(res[0])
+            setAll(({
+              courses: res
             }))
           }).catch((error) => {
             if (error.response) {
@@ -99,27 +76,6 @@ const BrowseCourses = () => {
               console.log(error.response.headers)
               }
           })}
-
-          function getAll(col) {
-            axios({
-              method: "GET",
-              url:"http://127.0.0.1:5000/get_all/"+col,
-            })
-            .then((response) => {
-              console.log("hi")
-              const res = response.data
-              console.log(res)
-              console.log(res[0])
-              setAll(({
-                courses: res
-              }))
-            }).catch((error) => {
-              if (error.response) {
-                console.log(error.response)
-                console.log(error.response.status)
-                console.log(error.response.headers)
-                }
-            })}
       
 
         
@@ -191,11 +147,8 @@ const BrowseCourses = () => {
                             {redditData && <div>
                               <p>Title: {redditData.first['title']}</p>
                               <p>Title: {redditData.first['date']}</p>
-                              <a href= {"https://www.reddit.com" + redditData.first['permalink']} target ="_blank"> Link to Post</a> 
+                              <a href= {"https://www.reddit.com" + redditData.first['permalink']} target ="_blank" rel="noreferrer"> Link to Post</a> 
                             </div>}
-
-                            <p>10th course: {all.courses[10]["Course Title"]}</p>
-                            <p>100th course: {all.courses[100]["Course Title"]}</p>
                         </Card>
                       </div>
                     } 
@@ -215,3 +168,46 @@ const BrowseCourses = () => {
 };
   
 export default BrowseCourses;
+
+
+    
+// const [classData, setClassData] = useState(null)
+// function getClassData(key, value) {
+//     axios({
+//       method: "GET",
+//       url:"http://127.0.0.1:5000/get/classes/"+key+"="+value,
+//     })
+//     .then((response) => {
+//       const res =response.data
+//       console.log(res)
+//       setClassData(({
+//         year: res["Year"],
+//         tearm: res["Term"],
+//         year_term: res["YearTerm"],
+//         subject: res["Subject"],
+//         number: res["Number"],
+//         course_title: res["Course Title"],
+//         sched_type: res["Sched Type"],
+//         a_plus: res["A+"],
+//         a: res["A"],
+//         a_minus: res["A-"],
+//         b_plus: res["B+"],
+//         b: res["B"],
+//         b_minus: res["B-"],
+//         c_plus: res["C+"],
+//         c: res["C"],
+//         c_minus: res["C-"],
+//         d_plus: res["D+"],
+//         d: res["D"],
+//         d_minus: res["D-"],
+//         f: res["F"],
+//         w: res["W"],
+//         primary_instructor: res["Primary Instructor"]
+//       }))
+//     }).catch((error) => {
+//       if (error.response) {
+//         console.log(error.response)
+//         console.log(error.response.status)
+//         console.log(error.response.headers)
+//         }
+//     })}
