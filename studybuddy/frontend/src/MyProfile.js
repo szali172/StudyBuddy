@@ -113,31 +113,19 @@ const MyProfile = () => {
                       <div>
                       {getUserData('id', '12D32423kbJKH9')} 
                       {userData && <div>
-                            <p>Id: {userData.user_id}</p>
                             <p>Name: {userData.user_name}</p>
                             <p>Email: {userData.user_email}</p>
-                            <p>Courses: {userData.user_courses.map(app => (<li>{app}</li>))}</p>
                           </div>
                       }
                       </div>
                     } 
                     <Button variant='outlined' color='success'> Edit Info ⮕</Button>   
                 </Box>
-                <ul>
-                </ul>
               </CardContent>
               <CardActions>
               </CardActions>
             </Card>
           </Grid>
-
-
-
-
-
-
-
-
 
           <Grid
             item
@@ -177,28 +165,19 @@ const MyProfile = () => {
                 </Typography>
                     {
                       <div>
-                      <p>To get your profile details: </p><Button variant='outlined' color='success' onClick={() => getUserData('id', id)}>Click me</Button>
+                      {/* <p>To get your profile details: </p><Button variant='outlined' color='success' onClick={() => getUserData('id', id)}>Click me</Button> */}
                       {userData && <div>
-                          <p>Courses: {userData.user_courses.map(app => (<li>{app}</li>))}</p>
+                          <p>{userData.user_courses.map(app => (<li>{app}</li>))}</p>
                           </div>
                       }
                       </div>
                     }  
                 </Box>
-                <ul>
-                </ul>
               </CardContent>
               <CardActions>
               </CardActions>
             </Card>
           </Grid>
-
-
-
-
-
-
-
 
           <Grid
             item
@@ -238,16 +217,14 @@ const MyProfile = () => {
                 </Typography>
                     {
                       <div>
-                      <p>To get your profile details: </p><Button variant='outlined' color='success' onClick={() => getUserData('id', id)}>Click me</Button>
+                      {/* <p>To get your profile details: </p><Button variant='outlined' color='success' onClick={() => getUserData('id', id)}>Click me</Button> */}
                       {userData && <div>
-                            <p>Favorites: {userData.user_favorites.map(app => (<li>{app}</li>))}</p>
+                            <p>{userData.user_favorites.map(app => (<li>{app}</li>))}</p>
                           </div>
                       }
                       </div>
                     }  
                 </Box>
-                <ul>
-                </ul>
               </CardContent>
               <CardActions>
               </CardActions>

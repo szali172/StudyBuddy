@@ -11,45 +11,10 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import GlobalStyles from '@mui/material/GlobalStyles';
 import Container from '@mui/material/Container';
-
-const tiers = [
-  {
-    title: 'KHUSHI',
-    description: [
-      'Come find a friend to study with for any class! Make a post and find other people.',
-    ],
-    buttonText: 'GO TO PAGE',
-    buttonVariant: 'outlined',
-    linkTo: '/findabuddy',
-  },
-  {
-    title: 'VIVEN',
-    description: [
-      'Look at UIUC courses and reddit posts about each course!',
-    ],
-    buttonText: 'GO TO PAGE',
-    buttonVariant: 'outlined',
-    linkTo: '/browse',
-  },
-  {
-    title: 'DIVYA',
-    description: [
-      'Meet the team and learn more about the creation of Study Buddy!',
-    ],
-    buttonText: 'GO TO PAGE',
-    buttonVariant: 'outlined',
-    linkTo: '/LearnMore',
-  },
-  {
-    title: 'ZUHAIR',
-    description: [
-      'Meet the team and learn more about the creation of Study Buddy!',
-    ],
-    buttonText: 'GO TO PAGE',
-    buttonVariant: 'outlined',
-    linkTo: '/LearnMore',
-  },
-];
+import logo from "./zuhair.jpeg"
+import logo1 from "./viven.jpeg"
+import logo2 from "./divya.jpeg"
+import logo3 from "./khushi.jpeg"
 
 
 function Content() {
@@ -66,21 +31,19 @@ function Content() {
           color="text.primary"
           gutterBottom
         >
-          STUDY BUDDY
+          LEARN MORE
         </Typography>
       </Container>
-      <Container maxWidth="md" component="main">
+      <Container maxWidth="xl" component="main">
         <Grid container spacing={5} alignItems="flex-end">
-          {tiers.map((tier) => (
             <Grid
               item
               xs={12}
-              md={4}
+              md={3}
             >
               <Card>
                 <CardHeader
-                  title={tier.title}
-                  subheader={tier.subheader}
+                  title= 'DIVYA'
                   titleTypographyProps={{ align: 'center' }}
                   subheaderTypographyProps={{
                     align: 'center',
@@ -101,30 +64,159 @@ function Content() {
                       mb: 2,
                     }}
                   >
+                    <Typography
+                    component="h5"
+                    variant="subtitle1"
+                    align="center"
+                    color="text.primary"
+                    gutterBottom
+                    >
+              Divya is in her second year in the University of Illinois at Urbana Champaign, studying computer science. She is from Naperville, Illinois and is looking forward to software development jobs!
+              </Typography>
                   </Box>
-                  <ul>
-                    {tier.description.map((line) => (
-                      <Typography
-                        component="li"
-                        variant="subtitle1"
-                        align="center"
-                        key={line}
-                      >
-                        {line}
-                      </Typography>
-                    ))}
-                  </ul>
+                  <img style={{ width: 200, height: 200 }} src={logo2} alt="React Logo" />
                 </CardContent>
                 <CardActions>
-                <Link to={tier.linkTo}>
-                  <Button fullWidth variant={tier.buttonVariant}>
-                    {tier.buttonText}
-                  </Button>
-                  </Link>
                 </CardActions>
               </Card>
             </Grid>
-          ))}
+
+
+            <Grid
+              item
+              xs={12}
+              md={3}
+            >
+              <Card>
+                <CardHeader
+                  title='KHUSHI'
+                  titleTypographyProps={{ align: 'center' }}
+                  subheaderTypographyProps={{
+                    align: 'center',
+                  }}
+                  sx={{
+                    backgroundColor: (theme) =>
+                      theme.palette.mode === 'light'
+                        ? theme.palette.grey[200]
+                        : theme.palette.grey[700],
+                  }}
+                />
+                <CardContent>
+                  <Box
+                    sx={{
+                      display: 'dix',
+                      justifyContent: 'center',
+                      alignItems: 'baseline',
+                      mb: 2,
+                    }}
+                  >
+                    <Typography
+                    component="h5"
+                    variant="subtitle1"
+                    align="center"
+                    color="text.primary"
+                    gutterBottom
+                    >
+              Khushi is a sophomore studying Computer Science at the University of Illinois at Urbana Champaign. She grew up in Ashburn, Virginia and wants to work more in product management in the future.
+              </Typography>
+                  </Box>
+                  <img style={{ width: 200, height: 200 }} src={logo3} alt="React Logo" />
+                </CardContent>
+                <CardActions>
+                </CardActions>
+              </Card>
+            </Grid> 
+
+            <Grid
+              item
+              xs={12}
+              md={3}
+            >
+              <Card>
+                <CardHeader
+                  title='VIVEN'
+                  titleTypographyProps={{ align: 'center' }}
+                  subheaderTypographyProps={{
+                    align: 'center',
+                  }}
+                  sx={{
+                    backgroundColor: (theme) =>
+                      theme.palette.mode === 'light'
+                        ? theme.palette.grey[200]
+                        : theme.palette.grey[700],
+                  }}
+                />
+                <CardContent>
+                  <Box
+                    sx={{
+                      display: 'dix',
+                      justifyContent: 'center',
+                      alignItems: 'baseline',
+                      mb: 2,
+                    }}
+                  >
+                    <Typography
+                    component="h5"
+                    variant="subtitle1"
+                    align="center"
+                    color="text.primary"
+                    gutterBottom
+                    >
+              Viven is a sophomore studying computer science at the University of Illinois at Urbana Champaign. He is from Basking Ridge, New Jersey and is excited for software development positions in the future!     
+              </Typography>
+                  </Box>
+                  <img style={{ width: 200, height: 200 }} src={logo1} alt="React Logo" />
+                </CardContent>
+                <CardActions>
+                </CardActions>
+              </Card>
+            </Grid>
+
+            <Grid
+              item
+              xs={12}
+              md={3}
+            >
+              <Card>
+                <CardHeader
+                  title= 'ZUHAIR'
+                  titleTypographyProps={{ align: 'center' }}
+                  subheaderTypographyProps={{
+                    align: 'center',
+                  }}
+                  sx={{
+                    backgroundColor: (theme) =>
+                      theme.palette.mode === 'light'
+                        ? theme.palette.grey[200]
+                        : theme.palette.grey[700],
+                  }}
+                />
+                <CardContent>
+                  <Box
+                    sx={{
+                      display: 'dix',
+                      justifyContent: 'center',
+                      alignItems: 'baseline',
+                      mb: 2,
+                    }}
+                  >
+                    <Typography
+                    component="h5"
+                    variant="subtitle1"
+                    align="center"
+                    color="text.primary"
+                    gutterBottom
+                    >
+              Zuhair is in his final year as a computer science major at the University of Illinois at Urbana Champaign. He is from Dhaka, Bangladesh and is excited to start working in software development next year!
+              </Typography>
+                  </Box>
+                  <img style={{ width: 200, height: 200 }} src={logo} alt="React Logo" />
+                </CardContent>
+                <CardActions>
+                </CardActions>
+              </Card>
+            </Grid>
+
         </Grid>
       </Container>
     </React.Fragment>

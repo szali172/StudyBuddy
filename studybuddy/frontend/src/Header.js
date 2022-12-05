@@ -3,7 +3,7 @@ import Button from '@mui/material/Button';
 import { Nav, NavLink, NavMenu } 
     from "./NavBarElements";
 import { Link } from 'react-router-dom'
-
+import {id} from './Login';
 
 const Navbar = () => {
 return (
@@ -29,8 +29,8 @@ return (
 
 
       <Link to={"/login"}>
-      <Button variant="outlined" sx={{ my: 1, mx: 1.5 }}>
-        Login
+      <Button variant="contained" sx={{ my: 1, mx: 1.5 }} color= "success">
+        John Smith
       </Button>
       </Link>
       

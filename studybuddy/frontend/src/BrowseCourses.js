@@ -8,13 +8,13 @@ import CardHeader from '@mui/material/CardHeader';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import Button from '@mui/material/Button';
   
 const BrowseCourses = () => {
+  
     const [classData, setClassData] = useState(null)
-    const courses = []
     const [GPA, setGPA] = useState(null)
     const [redditData, setRedditData] = useState(null)
+    const [all, setAll] = useState(null)
 
     function getClassData(key, value) {
         axios({
@@ -100,10 +100,33 @@ const BrowseCourses = () => {
               }
           })}
 
+          function getAll(col) {
+            axios({
+              method: "GET",
+              url:"http://127.0.0.1:5000/get_all/"+col,
+            })
+            .then((response) => {
+              console.log("hi")
+              const res = response.data
+              console.log(res)
+              console.log(res[0])
+              setAll(({
+                courses: res
+              }))
+            }).catch((error) => {
+              if (error.response) {
+                console.log(error.response)
+                console.log(error.response.status)
+                console.log(error.response.headers)
+                }
+            })}
+      
+
         
 
   return (
     <div>
+      
         <style>{'body { background-color: #e8c3d9; }'}</style>
         <Container disableGutters maxWidth="sm" component="main" sx={{ pt: 8, pb: 6 }}>
         <Typography
@@ -152,34 +175,30 @@ const BrowseCourses = () => {
                     >
                    COURSES
                 </Typography>
-                {getClassData('Primary%20Instructor', 'Zheng,%20Reanne')}
-                    {classData && <div>
-                        <p>Course Name: {classData.course_title}</p>
-                        <p>Year: {classData.year}</p>
-                        <p>Number of A+: {classData.a_plus}</p>
-                        <p>Primary Instructor: {classData.primary_instructor}</p>                        
-                        {console.log(getGPA("Intro%20Asian%20American%20Studies"))}
-                        {GPA && <div>
-                            {/* <p>GPA: {GPA.gpa}</p> */}
-                            {/* {courses.push({year: classData.year, name: classData.course_title, numbeofaplus: classData.a_plus, primaryinst: classData.primary_instructor, gpa: GPA.gpa})} */}
-                          </div>
-                        } 
-                        {getRedditPost('UIUC', 'Intro Asian American Studies')}
-                        {redditData && <div>
-                              <h4>Reddit Post for this course: </h4>
-                              <p>Author: {redditData.first['author']}</p>
-                              <p>Date: {redditData.first['date']}</p>
+                {getAll("classes")}
+                    {all && <div>
+                        <Card>
+                            {<p>Course Title: {all.courses[0]["Course Title"]}</p>}
+                            {<p>Year: {all.courses[0]["Year"]}</p>}
+                            {<p>Number of A+: {all.courses[0]["A+"]}</p>}
+                            {<p>Primary Instructor: {all.courses[0]["Primary Instructor"]}</p>}
+                            {getGPA(all.courses[0]["Course Title"])}
+                            {GPA && <div>
+                              {<p>GPA: {GPA.gpa} </p>}
+                            </div>}
+                            {getRedditPost('UIUC', all.courses[0]["Course Title"])}
+                            <h4>Reddit Post for this course: </h4>
+                            {redditData && <div>
                               <p>Title: {redditData.first['title']}</p>
-                              <p>Link to Post: {redditData.first['permalink']}</p>
-                            </div>
-                        }
+                              <p>Title: {redditData.first['date']}</p>
+                              <a href= {"https://www.reddit.com" + redditData.first['permalink']} target ="_blank"> Link to Post</a> 
+                            </div>}
+
+                            <p>10th course: {all.courses[10]["Course Title"]}</p>
+                            <p>100th course: {all.courses[100]["Course Title"]}</p>
+                        </Card>
                       </div>
-                    }
-                  <Card>
-                  {/* <div>
-                  {courses.map(paragraph => <p>{paragraph}</p>)}
-                  </div> */}
-                  </Card>
+                    } 
                 </Box>
                 <ul>
                 </ul>
@@ -196,90 +215,3 @@ const BrowseCourses = () => {
 };
   
 export default BrowseCourses;
-
-
-class FilterSeach
-{
-    #displayedCourses = null
-
-    filterByAlpha() {
-        this.#displayedCourses.sort();
-    }
-    filterByPrefix(prefix) {
-        for (var i = 0; i < this.#displayedCourses.length; i++) {
-            if (this.#displayedCourses[i].includes(prefix)) {
-                <div>
-                this.#displayedCourses[i]
-                </div>
-            }
-        }
-    }
-    filterByName(name) {
-        for (var i = 0; i < this.#displayedCourses.length; i++) {
-            if (this.#displayedCourses[i] === name) {
-                <div>
-                this.#displayedCourses[i]
-                </div>
-            }
-        }
-    }
-}
-
-class RedditPost 
-{
-    setPost(post) {}
-    fetchPosts() {}
-}
-
-
-
-class Course
-{
-    #name = null;
-    #avgGpa = 0.0;
-    #redditPosts = [];RedditPost;
-    #favorite = false;
-    #added = false;
-
-    constructor(n, gpa)
-    {
-        this.#name = n;
-        this.#avgGpa = gpa;
-        this.#favorite = false;
-        this.#added = true;
-    }
-
-    setName(n)
-    {
-        this.#name = n;
-    }
-    getName()
-    {
-        return this.#name;
-    }
-    setGPA(gpa)
-    {
-        this.#avgGpa = gpa;
-    }
-    getGPA()
-    {
-        return this.#avgGpa;
-    }
-    getRedditPost()
-    {
-        return this.#redditPosts;
-    }
-    setFavorite(fav)
-    {
-        this.#favorite = fav;
-    }
-    isFavorite()
-    {
-        return this.#favorite;
-    }
-    isAdded()
-    {
-        return this.#added;
-    }
-}
-

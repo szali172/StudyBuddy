@@ -171,13 +171,13 @@ const FindABuddy = () => {
                   
                     </form>
                     } 
-                      <p>To get Post details: </p><Button variant='outlined' color='success' onClick={() => getPostData('op_id', id)}>Click me</Button>
+                      {/* {getPostData('op_id', id)}
                         {postData && <div>
                             <p>Time: {postData.ts}</p>
                             <p>Location: {postData.location}</p>
                             <p>Content: {postData.content}</p>
                             </div>
-                        }
+                        } */}
 
                      
                 </Box>
@@ -227,7 +227,7 @@ const FindABuddy = () => {
                     >
                    VIEW POSTS
                 </Typography>
-                      <p>To get Post details: </p><Button variant='outlined' color='success' onClick={() => getPostData('op_id', id)}>Click me</Button>
+                      {getPostData('op_id', id)}
                         {postData && <div>
                             <p>Time: {postData.ts}</p>
                             <p>Location: {postData.location}</p>
