@@ -9,7 +9,6 @@ Khushi Maheshwari (khushim2) - Frontend development
 Viven Puthenpurayil (vivencp2) - Backend development
 
 Zuhair Ali (sali200) - Backend development
-
 &nbsp;
 
 ## **Summary**
@@ -17,7 +16,9 @@ Study Buddy is a web application, created in React JS, that allows students to f
 &nbsp;
 
 ## **Technical Architecture**
-We divided up the project into two sections, the backend and frontend. In the backend, we worked on creating a database that can store all information and data given. This includes storing course descriptions and any requests the frontend will make. We also created algorithms to collect all the reddit post information and retrieve it when called in the frontend. PRAW, the Reddit Posts, and Wade's GPA dataset all go into the backend. On the frontend, we aimed to create a better user experience by creating 4 separate pages with different functionalities. We created easy to use buttons, text boxes, and a way to switch between pages. The frontend also consists of algorithms connected with the backend to be able to use the information and display it on the web page. 
+We divided up the project into two sections, the backend and frontend. In the backend, we worked on creating a database that can store all information and data given. This includes storing course descriptions and any requests the frontend will make. We also created algorithms to collect all the reddit post information and retrieve it when called in the frontend. PRAW, which contained the reddit posts and how to use them, and Wade's GPA dataset all go into the backend. On the frontend, we aimed to create a better user experience by creating 4 separate pages with different functionalities. We created easy to use buttons, text boxes, and a way to switch between pages. The frontend also consists of algorithms connected with the backend to be able to use the information and display it on the web page.
+
+In order to do this, we imported the Card, Box, Typography, Container, Axios, and UI libraries to implement the frontend, and core python libraries, PRAW, pymongo, flask, and flask_cors libraries in the backend. 
 &nbsp;
 
 ## **Installation Instructions**
