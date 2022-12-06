@@ -42,7 +42,7 @@ npm start
 cd studybuddy
 cd backend
 cd app
-flask run
+python3 server.py
 ```
 
 &nbsp;
