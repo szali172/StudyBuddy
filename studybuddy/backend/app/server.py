@@ -1,9 +1,11 @@
 ### Imports
 from flask import Flask, request
-import multiprocessing, sys, datetime, time, requests, heapq
+from flask_cors import CORS
+import threading, multiprocessing, atexit, signal, sys, datetime, time, requests, heapq
 
 # App
 Server = Flask(__name__)
+CORS(Server)
 
 # Blueprints
 from reddit import Reddit
@@ -69,7 +71,6 @@ def maintain_queue(hq: HeapQueue):
                 continue
         
         three_days = datetime.datetime.now() - datetime.timedelta(days=3)
-        print(three_days)
         
         # Check queue (after repopulating)
         while not hq.is_empty():

@@ -77,7 +77,7 @@ def get_all(coll, heapq):
         return json.dumps(entries, default=str), 200
     
     else:
-        return print("collection is empty"), 204 # No Content
+        return 'Collection is empty', 204 # No Content
 
     
     
