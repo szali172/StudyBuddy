@@ -35,7 +35,7 @@ npm install
 
 ```
 cd studybuddy
-cd frontend
+cd backend
 pip install -r requirements.txt 
 ```
 
