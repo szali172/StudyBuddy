@@ -26,7 +26,17 @@ In order to do this, we imported the Card, Box, Typography, Container, Axios, an
 ### After cloning the repository and entering the directory for the project install the node modules by doing
 
 ``` 
+cd studybuddy
+cd frontend
 npm install 
+```
+
+### To install the pip requirements execute these commands in a terminal window
+
+```
+cd studybuddy
+cd frontend
+pip install -r requirements.txt 
 ```
 
 ### To start the website locally execute these commands in a terminal window
@@ -44,11 +54,6 @@ cd backend
 cd app
 python3 server.py
 ```
-
-&nbsp;
-
-## `requirements.txt`
-### Use `pip install -r requirements.txt` to install python dependencies necessary for the server
 
 &nbsp;
 
