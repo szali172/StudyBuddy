@@ -28,7 +28,7 @@ hq = HeapQueue(HOST, PORT)
 ### Routes
 def start_server():
     print('Server started!')
-    Server.run(port=PORT, debug=False, threaded=True)
+    Server.run(port=PORT, debug=False)
 
 
 

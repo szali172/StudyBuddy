@@ -52,7 +52,7 @@ npm start
 cd studybuddy
 cd backend
 cd app
-python3 server.py
+python3 server.py or python server.py (depending on python version)
 ```
 
 &nbsp;
