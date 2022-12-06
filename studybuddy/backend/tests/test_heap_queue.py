@@ -24,8 +24,7 @@ time_as_str3 = (datetime.datetime.now() - datetime.timedelta(days=1)).strftime(D
 time_as_dt3 = datetime.datetime.strptime(time_as_str3, DATETIME_FORMAT)
 id3 = '7db3ucbw3q7j'
 
-
-    
+   
 # Helpers
 def insert_all():
     """
@@ -37,6 +36,7 @@ def insert_all():
     
 def empty_hq():
     hq.queue = []
+    
     
 
 ### Tests

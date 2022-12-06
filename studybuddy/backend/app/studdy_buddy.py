@@ -10,7 +10,6 @@ import utils.validate_entry as validate_entry
 
 StuddyBuddy = Blueprint('studdy_buddy', __name__)
 CORS(StuddyBuddy)
-
     
 # Connect to Mongo DB
 from pymongo import MongoClient
@@ -82,8 +81,8 @@ def get_all(coll, heapq):
 
     
     
-@StuddyBuddy.route('/delete/<coll>/id=<value>', defaults={'stale_post': False})
-@StuddyBuddy.route('/delete/<coll>/id=<value>/stale_post=<stale_post>')
+@StuddyBuddy.route('/delete/<coll>/id=<value>', defaults={'stale_post': False}, methods=['DELETE'])
+@StuddyBuddy.route('/delete/<coll>/id=<value>/stale_post=<stale_post>', methods=['DELETE'])
 def delete(coll, value, stale_post):
     """
     Delete a document from either the 'Posts' or 'Users' collection 
@@ -96,9 +95,9 @@ def delete(coll, value, stale_post):
         return f'Could not access {coll}\n', 400
     
     # Ensure field passed is an id
-    if coll == 'Users':
+    if coll == 'Users' or coll == 'test_users':
         id = 'id'
-    elif coll == 'Posts':
+    elif coll == 'Posts' or coll == 'test_posts':
         id = 'post_id'
     else:
         return f'''Please pass a valid collection name (either \'Posts\' or \'Users\'). 
@@ -122,8 +121,25 @@ def delete(coll, value, stale_post):
         return '''Could not find any document with field 
                   {\'id\' : \'%s\'} in the %s collection'''.format(value,
                                                                    coll), 400
+                  
+
+
+@StuddyBuddy.route('/delete_all/<coll>', methods=['DELETE'])
+def delete_all(coll):
+    """
+    Delete an entire collection
+    WARNING: Do not call this during production for any reason
+    """
+    # Check to see if collection exists
+    try:
+        collection = database[coll] # either users or posts
+    except:
+        return f'Could not access {coll}\n', 400
     
+    collection.delete_many({})
+    return f'Successfully deleted {coll}', 200
     
+
 
 @StuddyBuddy.route('/insert/<coll>', methods=['POST'])
 def insert(coll):
@@ -149,9 +165,9 @@ def insert(coll):
         return 'Bad JSON value. Please check again', 422 # Unprocessable Entity
     
     # Handle entry separately depending on collection specified
-    if coll == 'Posts':
+    if coll == 'Posts' or coll == 'test_posts':
         response, status = validate_entry.validate_post_entry(database, entry, 'insert')
-    elif coll == 'Users':
+    elif coll == 'Users' or coll == 'test_users':
         response, status = validate_entry.validate_user_entry(database, entry, 'insert')
     else:
         return f'''Please pass a valid collection name (either \'Posts\' or \'Users\'). 
@@ -161,7 +177,7 @@ def insert(coll):
     if status == 200:     
         collection.insert_one(entry)
         
-        if coll == 'Posts': 
+        if coll == 'Posts' or coll == 'test_posts': 
             # Insert post into posts queue
             from server import hq
             hq.insert(entry['ts'], entry['post_id'])
@@ -173,20 +189,31 @@ def insert(coll):
         return response, status
 
 
-
-@StuddyBuddy.route('/insert_comment/post_id=<post_id>', methods=['PUT']) 
-def insert_comment(post_id):
+@StuddyBuddy.route('/insert_comment/post_id=<post_id>', defaults={'test_posts': False}, methods=['PUT'])
+@StuddyBuddy.route('/insert_comment/post_id=<post_id>/<test_posts>', methods=['PUT']) 
+def insert_comment(post_id, test_posts: bool):
     """
     Inserts a comment to a post given a unique ID of the post (post_id)
     **JSON**: contains comment in a dictionary format, i.e.
             {"user_id":"12D32423kbJK11","ts":"Wed Nov 16 2022 12:35:56 GMT-0600 (Central Standard Time)","content":"text"}
     """
     # Search for post
-    collection = database['Posts']
+    if test_posts:
+        collection = database['test_posts']
+    else:
+        collection = database['Posts']     
     cursor = collection.find_one({"post_id": post_id})
     
     if cursor:
-        comment = json.loads(json.dumps(request.json))
+        
+        # JSON manipulation
+        json_field = request.json
+        if isinstance(json_field, str):
+            comment = json.loads(json_field)
+        elif isinstance(json_field, dict):
+            comment = json_field
+        else:
+            return 'Bad JSON value. Please check again', 422 # Unprocessable Entity
         
         response, status = validate_entry.validate_comment_entry(database, comment, "insert")
 
@@ -222,9 +249,9 @@ def update(coll, search_key, search_value):
     if cursor:
         entry = json.loads(request.json)
         
-        if coll == 'Users':
+        if coll == 'Users' or coll == 'test_users':
             response, status = validate_entry.validate_user_entry(database, entry, 'update')
-        elif coll == 'Posts':
+        elif coll == 'Posts' or coll == 'test_posts':
             response, status = validate_entry.validate_post_entry(database, entry, 'update')
         else:
             return f'''Please pass a valid collection name (either \'Posts\' or \'Users\'). 
