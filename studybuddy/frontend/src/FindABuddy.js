@@ -24,7 +24,6 @@ const FindABuddy = () => {
       })
       .then((response) => {
         const res =response.data
-        console.log(res)
         setPostData(({
           post_id: res["post_id"],
           op_id: res["op_id"],
@@ -41,8 +40,8 @@ const FindABuddy = () => {
           }
       })}
 
-       /*
-     Inserts a post into the 'Posts' collection of the database given arguments
+    /*
+      Inserts a post into the 'Posts' collection of the database given arguments
       post_id: string, op_id: string, ts: string, location: string, content: string comments: array of strings
     */
 
@@ -171,15 +170,6 @@ const FindABuddy = () => {
                   
                     </form>
                     } 
-                      {/* {getPostData('op_id', id)}
-                        {postData && <div>
-                            <p>Time: {postData.ts}</p>
-                            <p>Location: {postData.location}</p>
-                            <p>Content: {postData.content}</p>
-                            </div>
-                        } */}
-
-                     
                 </Box>
                 <ul>
                 </ul>

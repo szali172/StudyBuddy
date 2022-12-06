@@ -21,7 +21,6 @@ const BrowseCourses = () => {
       })
       .then((response) => {
         const res =response.data
-        console.log(res)
         var total = (parseInt(res["A+"])* 4) + (parseInt(res["A"]) * 4) + (parseInt(res["A-"]) * 3.67) + (parseInt(res["B+"]) * 3.33) + (parseInt(res["B"]) * 3) + (parseInt(res["B-"]) * 2.67) + (parseInt(res["C+"]) * 2.33) + (parseInt(res["C"]) * 2) + (parseInt(res["C-"]) * 1.67) + (parseInt(res["D+"]) * 1.33) + (parseInt(res["D"] * 1)) + (parseInt(res["D-"]) * 0.67)
         var gpa = (total / (parseInt(res["A+"]) + parseInt(res["A"]) + parseInt(res["A-"]) + parseInt(res["B+"]) + parseInt(res["B"]) + parseInt(res["B-"]) + parseInt(res["C+"]) + parseInt(res["C"]) + parseInt(res["C-"]) + parseInt(res["D+"]) + parseInt(res["D"]) + parseInt(res["D-"]) + parseInt(res["F"]))).toFixed(2)
         setGPA(({
@@ -42,9 +41,6 @@ const BrowseCourses = () => {
         })
         .then((response) => {
           const res =response.data
-          console.log(res)
-          console.log(typeof res)
-          // console.log(res[0])
           setRedditData(({
             first: res[0]
           }))
@@ -62,10 +58,7 @@ const BrowseCourses = () => {
             url:"http://127.0.0.1:5000/get_all/"+col,
           })
           .then((response) => {
-            console.log("hi")
             const res = response.data
-            console.log(res)
-            console.log(res[0])
             setAll(({
               courses: res
             }))

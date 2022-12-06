@@ -146,7 +146,6 @@ const MyProfile = () => {
                 </Typography>
                     {
                       <div>
-                      {/* <p>To get your profile details: </p><Button variant='outlined' color='success' onClick={() => getUserData('id', id)}>Click me</Button> */}
                       {userData && <div>
                           <p>{userData.user_courses.map(app => (<li>{app}</li>))}</p>
                           </div>
@@ -198,7 +197,6 @@ const MyProfile = () => {
                 </Typography>
                     {
                       <div>
-                      {/* <p>To get your profile details: </p><Button variant='outlined' color='success' onClick={() => getUserData('id', id)}>Click me</Button> */}
                       {userData && <div>
                             <p>{userData.user_favorites.map(app => (<li>{app}</li>))}</p>
                           </div>

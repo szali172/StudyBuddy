@@ -44,8 +44,6 @@ const Login = () => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
-    //@TODO: building SHA-256 function- cache hit rate is lower and better to use
-
     //get a random string for the id
     const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let result = ' ';
