@@ -37,6 +37,8 @@ def insert_all():
     
 def empty_hq():
     hq.queue = []
+    
+
 ### Tests
 def test_heap_insert():
     # Insert single item

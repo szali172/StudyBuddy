@@ -135,7 +135,3 @@ def timestamp(entry):
         return f"Date format \"{entry['ts']}\" is incorrect\nCorrect format is \"Wed Nov 16 2022 12:35:56 GMT-0600 (Central Standard Time)\"", 400
     
     return "OK", 200
-
-
-# TODO: implement a validate_course_entry and iterate through the users list of course to make sure they are okay, similar to comments within validate_post
-# TODO: If user DNE, check with deleted db collection to see if they exist there, otherwise, the user id is incorrect
