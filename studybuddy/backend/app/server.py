@@ -1,9 +1,11 @@
 ### Imports
 from flask import Flask, request
+from flask_cors import CORS
 import threading, multiprocessing, atexit, signal, sys, datetime, time, requests, heapq
 
 # App
 Server = Flask(__name__)
+CORS(Server)
 
 # Blueprints
 from reddit import Reddit

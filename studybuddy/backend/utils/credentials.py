@@ -7,4 +7,3 @@ praw_user_agent = "<console:StuddyBuddy:1.0>"
 
 
 token = '1'
-# TODO: Update token^
