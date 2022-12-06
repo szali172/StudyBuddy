@@ -9,7 +9,6 @@ Khushi Maheshwari (khushim2) - Frontend development
 Viven Puthenpurayil (vivencp2) - Backend development
 
 Zuhair Ali (sali200) - Backend development
-
 &nbsp;
 
 ## **Summary**
