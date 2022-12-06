@@ -133,8 +133,4 @@ def timestamp(entry):
     except:
         return f"Date format \"{entry['ts']}\" is incorrect\nCorrect format is \"Wed Nov 16 2022 12:35:56 GMT-0600 (Central Standard Time)\"", 400
     
-<<<<<<< HEAD
     return "OK", 200
-=======
-    return "OK", 200
->>>>>>> 76405f3166a0d27385717714af77eec84685db05
