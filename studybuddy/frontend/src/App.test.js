@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitForElement } from '@testing-library/react';
 import App from './App';
 import { BrowserRouter } from 'react-router-dom';
 import MyProfile from './MyProfile';
@@ -6,6 +6,9 @@ import FindABuddy from './FindABuddy';
 import Browse from './BrowseCourses';
 import '@testing-library/jest-dom'
 import LearnMore from './LearnMore';
+import axios from "axios";
+
+
 
 test('renders homepage', () => {
   render(<App />);
@@ -37,13 +40,16 @@ test('myProfile', () => {
   
 });
 
+
 test('FindABuddy', () => {
   render(<BrowserRouter><FindABuddy /></BrowserRouter>);
   const header = screen.getByText("FIND A BUDDY")
   expect(header).toBeInTheDocument();
 
-  const post = screen.queryByText("Hey, I'm looking to work on ... Anyone else?")
-  expect(post).toBeInTheDocument();
+  // const post = screen.queryByText("Hey, I'm looking to work on ... Anyone else?")
+  // expect(post).toBeInTheDocument();
+
+  // expect(screen.getByText('Grainger')).toBeInTheDocument()
 
 });
 
@@ -58,3 +64,4 @@ test('LearnMore', () => {
   const header = screen.getByText("LEARN MORE")
   expect(header).toBeInTheDocument();
 });
+

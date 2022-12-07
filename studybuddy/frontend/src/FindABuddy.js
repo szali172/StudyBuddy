@@ -45,21 +45,21 @@ const FindABuddy = () => {
       post_id: string, op_id: string, ts: string, location: string, content: string comments: array of strings
     */
 
-    function insertPostData(post_id, op_id, ts, location, content, comments) {
-      
-      const data = `{"post_id":"${post_id}","op_id":"${op_id}","ts":"${ts}","location":"${location}","content":"${content}","comments":"${comments}"}`;
-     
-      axios.post("http://127.0.0.1:5000/insert/Posts", data, {headers: {
-                    'Access-Control-Allow-Origin': '*',
-                    'Content-Type': 'application/json',
-    }}).catch((error) => {
-        if (error.response) {
-          console.log(error.response)
-          console.log(error.response.status)
-          console.log(error.response.headers)
-          }
-        })
-    }
+      function insertPostData(post_id, op_id, location, content, comments) {
+        var ts = Date(Date.now()).toString()
+        const data = `{"post_id":"${post_id}","op_id":"${op_id}","ts":"${ts}","location":"${location}","content":"${content}","comments":"${comments}"}`;
+  
+        axios.post("http://127.0.0.1:5000/insert/Posts", data, {headers: {
+                      'Access-Control-Allow-Origin': '*',
+                      'Content-Type': 'application/json',
+      }}).catch((error) => {
+          if (error.response) {
+            console.log(error.response)
+            console.log(error.response.status)
+            console.log(error.response.headers)
+            }
+          })
+      }
   
     
 
@@ -166,7 +166,7 @@ const FindABuddy = () => {
                         <br></br>
                         <br></br>
 
-                        <Button variant='outlined' color='success' onClick={() => insertPostData("4567898765638",id, "2022-11-6 21:42:26.423489" , location.toString(), description.toString())}>MAKE POST</Button>
+                        <Button variant='outlined' color='success' onClick={() => insertPostData("4567898765638",id, location.toString(), description.toString())}>MAKE POST</Button>
                   
                     </form>
                     } 
