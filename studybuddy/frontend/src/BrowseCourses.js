@@ -87,8 +87,8 @@ const BrowseCourses = () => {
         >
           BROWSE COURSES
         </Typography>
-        <Grid container spacing={5} alignItems="flex-end">
-          <Grid
+        <Grid key="uniqueId1" container spacing={5} alignItems="flex-end">
+          <Grid key="uniqueId2"
             item
             xs={12}
             md={25}
@@ -152,9 +152,8 @@ const BrowseCourses = () => {
               <CardActions>
               </CardActions>
             </Card>
-
           </Grid>
-      </Grid>
+        </Grid>
       </Container>
     </div>
   );

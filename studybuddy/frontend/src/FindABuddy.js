@@ -86,8 +86,8 @@ const FindABuddy = () => {
           FIND A BUDDY
         </Typography>
 
-        <Grid container spacing={5} alignItems="flex-end">
-          <Grid
+        <Grid key="uniqueId3" container spacing={5} alignItems="flex-end">
+          <Grid key="uniqueId4"
             item
             xs={12}
             md={6}
