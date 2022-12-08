@@ -37,10 +37,7 @@ def get(coll, key, value):
     if cursor:
         return json.dumps(cursor, default=str), 200
     else:
-        return '''Could not find any document with field 
-                  {\'%s\' : \'%s\'} in the %s collection'''.format(key, 
-                                                                   value, 
-                                                                   coll), 400
+        return f"Could not find any document with {{'{key}': '{value}'}} in {coll}", 400
     
     
     
@@ -66,7 +63,7 @@ def get_all(coll, heapq):
         # Create a tuple for every post and add it to list
         for document in cursor:
             
-            if coll == 'Posts':
+            if coll == 'Posts' or coll == 'test_posts':
                 # Incoming call from heapq
                 if heapq:
                     entries.append((document['ts'], document['post_id']))
@@ -100,27 +97,29 @@ def delete(coll, value, stale_post):
     elif coll == 'Posts' or coll == 'test_posts':
         id = 'post_id'
     else:
-        return f'''Please pass a valid collection name (either \'Posts\' or \'Users\'). 
+        return f'''Please pass a valid collection name (either \'Posts\' or \'Users\').
                    {coll} is not valid for posting data''', 400
     
     cursor = collection.find_one({id: value})
     
     if cursor:
         collection.delete_one({id: value})
-        if coll == 'Posts':
+        if coll == 'Posts' or coll == 'test_posts':
             
             if stale_post:
                 # Remove post from queue
-                from server import hq
+                try:
+                    from server import hq
+                except ModuleNotFoundError:
+                    from .server import hq
+                    
                 hq.remove(cursor['post_id'])
                 
             return f'Successfully deleted post \'{value}\' from \'{coll}\'', 200
         else:
             return f'Successfully deleted user \'{value}\' from \'{coll}\'', 200
     else:
-        return '''Could not find any document with field 
-                  {\'id\' : \'%s\'} in the %s collection'''.format(value,
-                                                                   coll), 400
+        return f"Could not find any document with {{'id': '{value}'}} in {coll}", 400
                   
 
 
@@ -166,9 +165,17 @@ def insert(coll):
     
     # Handle entry separately depending on collection specified
     if coll == 'Posts' or coll == 'test_posts':
-        response, status = validate_entry.validate_post_entry(database, entry, 'insert')
+        if coll == 'test_posts':
+            response, status = validate_entry.validate_post_entry(database, entry, 'insert', testing=True)
+        else:
+            response, status = validate_entry.validate_post_entry(database, entry, 'insert')
+            
     elif coll == 'Users' or coll == 'test_users':
-        response, status = validate_entry.validate_user_entry(database, entry, 'insert')
+        if coll == 'test_users':
+            response, status = validate_entry.validate_user_entry(database, entry, 'insert', testing=True)
+        else:
+            response, status = validate_entry.validate_user_entry(database, entry, 'insert')
+            
     else:
         return f'''Please pass a valid collection name (either \'Posts\' or \'Users\'). 
                    {coll} is not valid for posting data''', 404
@@ -179,8 +186,12 @@ def insert(coll):
         
         if coll == 'Posts' or coll == 'test_posts': 
             # Insert post into posts queue
-            from server import hq
+            try:
+                from server import hq
+            except ModuleNotFoundError:
+                from .server import hq
             hq.insert(entry['ts'], entry['post_id'])
+            
             return f'Successfully inserted post \'{entry["post_id"]}\' into \'{coll}\'', 200
         else: 
             return f'Successfully inserted user \'{entry["id"]}\' into \'{coll}\'', 200  
@@ -189,16 +200,16 @@ def insert(coll):
         return response, status
 
 
-@StuddyBuddy.route('/insert_comment/post_id=<post_id>', defaults={'test_posts': False}, methods=['PUT'])
-@StuddyBuddy.route('/insert_comment/post_id=<post_id>/<test_posts>', methods=['PUT']) 
-def insert_comment(post_id, test_posts: bool):
+@StuddyBuddy.route('/insert_comment/post_id=<post_id>', defaults={'testing': False}, methods=['PUT'])
+@StuddyBuddy.route('/insert_comment/post_id=<post_id>/<testing>', methods=['PUT']) 
+def insert_comment(post_id, testing: bool):
     """
     Inserts a comment to a post given a unique ID of the post (post_id)
     **JSON**: contains comment in a dictionary format, i.e.
             {"user_id":"12D32423kbJK11","ts":"Wed Nov 16 2022 12:35:56 GMT-0600 (Central Standard Time)","content":"text"}
     """
     # Search for post
-    if test_posts:
+    if testing:
         collection = database['test_posts']
     else:
         collection = database['Posts']     
@@ -215,7 +226,10 @@ def insert_comment(post_id, test_posts: bool):
         else:
             return 'Bad JSON value. Please check again', 422 # Unprocessable Entity
         
-        response, status = validate_entry.validate_comment_entry(database, comment, "insert")
+        if testing:
+            response, status = validate_entry.validate_comment_entry(database, comment, "insert", testing=True)
+        else:
+            response, status = validate_entry.validate_comment_entry(database, comment, "insert")
 
         if status == 200:
             collection.update_one({"post_id": post_id}, {'$push': {"comments": comment}})
@@ -249,23 +263,28 @@ def update(coll, search_key, search_value):
     if cursor:
         entry = json.loads(request.json)
         
-        if coll == 'Users' or coll == 'test_users':
-            response, status = validate_entry.validate_user_entry(database, entry, 'update')
-        elif coll == 'Posts' or coll == 'test_posts':
-            response, status = validate_entry.validate_post_entry(database, entry, 'update')
+        if coll == 'Posts' or coll == 'test_posts':
+            if coll == 'test_posts':
+                response, status = validate_entry.validate_post_entry(database, entry, 'update', testing=True)
+            else:
+                response, status = validate_entry.validate_post_entry(database, entry, 'update')
+                
+        elif coll == 'Users' or coll == 'test_users':
+            if coll == 'test_users':
+                response, status = validate_entry.validate_user_entry(database, entry, 'update', testing=True)
+            else:
+                response, status = validate_entry.validate_user_entry(database, entry, 'update')
+                
         else:
             return f'''Please pass a valid collection name (either \'Posts\' or \'Users\'). 
                    {coll} is not valid for posting data''', 400
                    
         if status == 200:
             collection.update_one({search_key: search_value}, {'$set': entry})
-            return f'Successfully updated {search_value} to {entry[search_value]}', 200
+            return f'Successfully updated {search_key}={search_value} with {entry}', 200
         elif status == 500:
             return f'Internal server error: {response}', status
         else:
             return response, status
     else:
-        return '''Could not find any document with field 
-                  {\'%s\' : \'%s\'} in the %s collection'''.format(search_key, 
-                                                                   search_value, 
-                                                                   coll), 400
+        return f"Could not find any document with {{'{search_key}': '{search_value}'}} in {coll}", 400

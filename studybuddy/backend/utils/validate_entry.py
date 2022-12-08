@@ -6,7 +6,7 @@ COMMENT_FIELDS = ['user_id', 'ts', 'content']
 DATETIME_FORMAT = '%a %b %d %Y %H:%M:%S GMT-0600 (Central Standard Time)'
 
 
-def validate_user_entry(database, user, method):
+def validate_user_entry(database, user, method, testing=False):
     """
     Validates a user entry passed in from the front-end before inserting/updating a database entry
     """
@@ -19,15 +19,20 @@ def validate_user_entry(database, user, method):
     if status != 200:
         return response, status
     
-    response, status = user_exists(database, user, 'user')
-    if status == 200 and method == 'insert':
-        return f'User \"{user["name"]}\" already exists. This user can only be updated or deleted, not re-inserted', 400
-    
+    if method == 'insert':
+        # Validate user exists
+        response, status = user_exists(database, user, 'user', testing)
+        if status == 200 and method == 'insert':
+            return f'User \"{user["name"]}\" already exists. This user can only be updated or deleted, not re-inserted', 400
+        
+    # NOTE: Update method does not require checking user existence 
+    #       since user has already been found before calling validate_entry
+
     return "User valid", 200
 
 
 
-def validate_post_entry(database, post, method):
+def validate_post_entry(database, post, method, testing=False):
     """
     Validates a post entry passed in from the front-end before inserting/updating a database entry
     """
@@ -40,21 +45,24 @@ def validate_post_entry(database, post, method):
     if status != 200:
         return response, status
     
-    # Validate User exists
-    response, status = user_exists(database, post, 'post')
-    if status != 200:
-        return response, status
+    if method == 'insert':
+        # Validate User exists
+        response, status = user_exists(database, post, 'post', testing)
+        if status != 200:
+            return response, status
     
-    # Validate timestamp format
-    response, status = timestamp(post)
-    if status != 200:
-        return response, status
+        # Validate timestamp format
+        response, status = timestamp(post)
+        if status != 200:
+            return response, status
+        
+    # NOTE: update method does not require checking user existence nor timestamp
     
     return 'Post valid', 200
 
 
 
-def validate_comment_entry(database, comment, method):
+def validate_comment_entry(database, comment, method, testing=False):
     """
     Validates a comment entry passed in from the front-end before inserting/updating a database entry
     """
@@ -68,7 +76,7 @@ def validate_comment_entry(database, comment, method):
         return response, status
         
     # Validate user exists
-    response, status = user_exists(database, comment, 'comment')
+    response, status = user_exists(database, comment, 'comment', testing)
     if status != 200:
         return response, status
     
@@ -102,7 +110,7 @@ def json_fields(entry, ENTRY_FIELDS, method):
 
 
 
-def user_exists(database, entry, entry_type):
+def user_exists(database, entry, entry_type, testing=False):
     """
     Check if a user exists in a database before inserting post/comment (entry_type)
     """
@@ -115,7 +123,7 @@ def user_exists(database, entry, entry_type):
     else:
         return f"Bad entry type \'{entry_type}\' when validating entry", 500
     
-    users_coll = database['Users']
+    users_coll = database['Users'] if testing == False else database['test_users']
     user_entry = users_coll.find_one({'id': entry[id]})    
     if not user_entry:
         return f"User with id \'{entry[id]}\' not found. Check user_id", 400

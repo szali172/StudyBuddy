@@ -8,8 +8,12 @@ Server = Flask(__name__)
 CORS(Server)
 
 # Blueprints
-from reddit import Reddit
-from studdy_buddy import StuddyBuddy
+try:
+    from reddit import Reddit
+    from studdy_buddy import StuddyBuddy
+except ModuleNotFoundError:
+    from .reddit import Reddit
+    from .studdy_buddy import StuddyBuddy
 
 Server.register_blueprint(Reddit)
 Server.register_blueprint(StuddyBuddy)

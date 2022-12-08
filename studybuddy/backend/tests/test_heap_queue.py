@@ -39,7 +39,6 @@ def empty_hq():
     
     
 
-### Tests
 def test_heap_insert():
     # Insert single item
     hq.insert(time_as_dt2, id2)
@@ -54,6 +53,7 @@ def test_heap_insert():
     assert hq[2][0] == time_as_dt1, "time_as_dt1 is the youngest item, should be the last item"
     
     empty_hq()
+    
     
     
 def test_heap_remove():
