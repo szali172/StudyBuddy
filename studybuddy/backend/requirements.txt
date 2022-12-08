@@ -1,0 +1,8 @@
+Flask==2.0.3
+flask_cors==3.0.10
+requests==2.22.0
+praw==7.6.1
+pymongo==4.2.0
+requests
+dnspython==2.2.1
+pytest==7.1.3
